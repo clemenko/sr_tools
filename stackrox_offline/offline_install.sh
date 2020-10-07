@@ -128,8 +128,9 @@ roxctl central generate k8s none --offline --enable-telemetry=false --lb-type np
 sed -i -e '/imagePullSecrets:/d' -e '/- name: stackrox/d' central-bundle/central/00-serviceaccount.yaml
 sed -i '32,$d' ./central-bundle/central/scripts/setup.sh
 
-sed -i '11,$d' ./central-bundle/scanner/scripts/setup.sh
-sed -i -e '/imagePullSecrets:/d' -e '/- name: stackrox/d' central-bundle/scanner/00-serviceaccount.yaml
+#reduce StackRox requirements
+sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' ./central-bundle/central/deployment.yaml
+sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' ./central-bundle/scanner/deployment.yaml
 
 #install
 ./central-bundle/central/scripts/setup.sh
@@ -144,10 +145,7 @@ roxctl -e $server:$rox_port sensor generate k8s --name rancher --central central
 
 #kubectl apply -R -f central-bundle/scanner/
 
-sed -i '27,56d' ./sensor-openshift/sensor.sh
-sed -i -e "s/collector.stackrox.io/$registry/g" -e "s#stackrox.io/main#$registry/main#g" sensor-openshift/sensor.yaml
-sed -i -e '/imagePullSecrets:/d' -e '/- name: stackrox/d' sensor-openshift/sensor.yaml
+sed -i '27,56d' ./sensor-rancher/sensor.sh
+sed -i -e "s/collector.stackrox.io/$registry/g" -e "s#stackrox.io/main#$registry/main#g" sensor-rancher/sensor.yaml
+sed -i -e '/imagePullSecrets:/d' -e '/- name: stackrox/d' sensor-rancher/sensor.yaml
 ./sensor-rancher/sensor.sh
-
-
-
