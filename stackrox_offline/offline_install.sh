@@ -1,6 +1,8 @@
 #!/bin/bash
 
-export version=3.0.43.1
+export version=3.0.50.0
+export password=Pa22word
+export server=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1|head -1)
 
 #setup selinux
 setenforce 0
@@ -17,6 +19,7 @@ yum install docker-ce -y
 systemctl start docker
 systemctl enable docker
 yum update -y
+yum install -y https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
 
 #kernel tuning
 cat << EOF >> /etc/sysctl.conf
@@ -74,78 +77,45 @@ sysctl -p
 curl -L# https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
 chmod 755 /usr/local/bin/kubectl
 
-#password for all the things
-export password=Pa22word
+#deploy k3s
+mkdir ~/.kube/
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy=traefik --docker" INSTALL_K3S_CHANNEL="stable" sh -
 
-#get local ip
-export server=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+#uncompress more stuff
+tar -zxvf stackrox_offline_$version.tgz
+tar -zxvf image-collector-bundle_$version.tgz
 
-#setup local registry
-docker run -d -p 5000:5000 --restart always --name registry registry
-export registry=$server:5000
-echo '{ "insecure-registries" : ["'$registry'"] }' > /etc/docker/daemon.json
-systemctl restart docker
-
-#install Rancher
-docker run -d -p 80:80 -p 443:443 --restart=unless-stopped rancher/rancher
-
-token=$(curl -sk https://$server/v3-public/localProviders/local?action=login -H 'content-type: application/json' -d '{"username":"admin","password":"admin"}'| jq -r .token)
-
-curl -sk https://$server/v3/users?action=changepassword -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"currentPassword":"admin","newPassword":"'$password'"}'
-
-api_token=$(curl -sk https://$server/v3/token -H 'content-type: application/json' -H "Authorization: Bearer $token" -d '{"type":"token","description":"automation"}' | jq -r .token)
-
-curl -sk https://$server/v3/settings/server-url -H 'content-type: application/json' -H "Authorization: Bearer $api_token" -X PUT -d '{"name":"server-url","value":"https://'$server'"}'
-
-curl -sk https://$server/v3/settings/telemetry-opt -X PUT -H 'content-type: application/json' -H 'accept: application/json' -H "Authorization: Bearer $api_token" -d '{"value":"out"}'
-
-clusterid=$(curl -sk https://$server/v3/cluster -H 'content-type: application/json' -H "Authorization: Bearer $api_token" -d '{"type":"cluster","nodes":[],"rancherKubernetesEngineConfig":{"ignoreDockerVersion":true},"name":"rancher"}' | jq -r .id )
-
-agent_command=$(curl -sk https://$server/v3/clusterregistrationtoken -H 'content-type: application/json' -H "Authorization: Bearer $api_token" --data-binary '{"type":"clusterRegistrationToken","clusterId":"'$clusterid'"}' | jq -r .nodeCommand)
-
-$agent_command --etcd --controlplane --worker
-
-#setup kube
-mkdir ~/.kube
-curl -sk https://$server/v3/clusters/$clusterid?action=generateKubeconfig -X POST -H 'accept: application/json' -H "Authorization: Bearer $api_token" | jq -r .config > ~/.kube/config
-
-#get roxctl
-curl -# -u andy@stackrox.com: -L https://install.stackrox.io/$version/bin/Linux/roxctl -o /usr/local/bin/roxctl
+#move roxctl
+rsync -avP image-bundle/bin/linux/roxctl /usr/local/bin/
 chmod 755 /usr/local/bin/roxctl
 
-#unzip images
-tar xzvf stackrox_offline_*
-tar xzvf image-collector-bundle_*
-
 #load images
-image-bundle/import.sh
-image-collector-bundle/import.sh
+for i in $(ls image-bundle/*.img); do docker load -i $i; done
+for i in $(ls image-collector-bundle/*.img); do docker load -i $i; done
 
 #generate stackrox install
-roxctl central generate k8s none --offline --enable-telemetry=false --lb-type np --main-image $registry/main:$version --scanner-db-image $registry/scanner-db:2.2.7 --scanner-image $registry/scanner:2.2.7 --password $password
-
-#offline magic
-sed -i -e '/imagePullSecrets:/d' -e '/- name: stackrox/d' central-bundle/central/00-serviceaccount.yaml
-sed -i '32,$d' ./central-bundle/central/scripts/setup.sh
+roxctl central generate k8s none --offline --enable-telemetry=false --lb-type np --password $password
 
 #reduce StackRox requirements
-sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' ./central-bundle/central/deployment.yaml
-sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' ./central-bundle/scanner/deployment.yaml
+sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' ./central-bundle/central/01-central-12-deployment.yaml 
+sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' -e 's/replicas: 3/replicas: 1/g' ./central-bundle/scanner/02-scanner-06-deployment.yaml
+sed -i -e 's/minReplicas: 2/minReplicas: 1/g' central-bundle/scanner/02-scanner-08-hpa.yaml
 
 #install
-./central-bundle/central/scripts/setup.sh
+kubectl create ns stackrox
 kubectl apply -R -f central-bundle/central
+kubectl apply -R -f central-bundle/scanner
 
 #get port
 rox_port=$(kubectl -n stackrox get svc central-loadbalancer |grep Node|awk '{print $5}'|sed -e 's/443://g' -e 's#/TCP##g')
 until [ $(curl -kIs https://$server:$rox_port|head -n1|wc -l) = 1 ]; do echo -n "." ; sleep 2; done
 
 #get sensor bundle
-roxctl -e $server:$rox_port sensor generate k8s --name rancher --central central.stackrox:443 --insecure-skip-tls-verify --image $registry/main:3.0.41.0 -p $password 
+roxctl -e $server:$rox_port sensor generate k8s --name k3s --central central.stackrox:443 --insecure-skip-tls-verify -p $password 
 
-#kubectl apply -R -f central-bundle/scanner/
+#slight mod for pre-loaded images
+sed -i -e "s/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g" sensor-k3s/sensor.yaml
+kubectl apply -R -f sensor-k3s/
 
-sed -i '27,56d' ./sensor-rancher/sensor.sh
-sed -i -e "s/collector.stackrox.io/$registry/g" -e "s#stackrox.io/main#$registry/main#g" sensor-rancher/sensor.yaml
-sed -i -e '/imagePullSecrets:/d' -e '/- name: stackrox/d' sensor-rancher/sensor.yaml
-./sensor-rancher/sensor.sh
+#update vulns database
+roxctl scanner upload-db -e $server:$rox_port --scanner-db-file=scanner-vuln-updates.zip --insecure-skip-tls-verify -p $password

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #vars
-export version=3.0.49.2
+export version=3.0.50.0
 export username=andy@stackrox.com
 
 rm -rf *.tar.gz
@@ -25,10 +25,10 @@ echo -n " getting vuln database : "
 curl -#LO -u $username:$password -L https://install.stackrox.io/scanner/scanner-vuln-updates.zip
 
 #compressing
-cd ..; tar --exclude=.DS_Store --exclude=all_the_things_* -zcvf offline/all_the_things_$version.tar.gz offline; cd offline
+cd ..; tar --exclude=.DS_Store --exclude=all_the_things_* -zcvf stackrox_offline/all_the_things_$version.tar.gz stackrox_offline; cd stackrox_offline
 
 #rsync
-#rsync -avP all_the_things_$version.tar.gz new:~andyc/html/rox/
+rsync -avP all_the_things_$version.tar.gz new:~andyc/html/rox/
 
 #cleanup
 rm -rf *.tgz *.zip
