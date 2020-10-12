@@ -74,12 +74,13 @@ EOF
 sysctl -p
 
 #get kubectl
-curl -L# https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
-chmod 755 /usr/local/bin/kubectl
+#curl -L# https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
+#chmod 755 /usr/local/bin/kubectl
 
 #deploy k3s
 mkdir ~/.kube/
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy=traefik --docker" INSTALL_K3S_CHANNEL="stable" sh -
+rsync -avP /etc/rancher/k3s/k3s.yaml ~/.kube/config
 
 #uncompress more stuff
 tar -zxvf stackrox_offline_$version.tgz
