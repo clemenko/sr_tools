@@ -153,6 +153,8 @@ EOF
 
 ```
 
+Navigate to the dashboard at http://longhorn.$NUM.stackrox.live
+
 Once everything is running we can move on.
 
 ## StackRox
@@ -233,8 +235,9 @@ roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central ce
 # watch it come up
 watch kubectl get pod -n stackrox
 
-# now check the gui at https://rox.$NUM.stackrox.live/main/clusters 
 ```
+
+Now check the gui at https://rox.$NUM.stackrox.live/main/clusters 
 
 ![sr_up](./sr_up.jpg)
 
