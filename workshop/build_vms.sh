@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=1 # of $prefix"
+num=2 # of $prefix"
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -50,11 +50,11 @@ for i in $(seq 1 $num); do
  doctl compute domain records create $domain --record-type A --record-name $prefix"$i"a --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"a|awk '{print $1}') > /dev/null 2>&1
  doctl compute domain records create $domain --record-type A --record-name $prefix"$i"b --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"b|awk '{print $1}') > /dev/null 2>&1
  doctl compute domain records create $domain --record-type A --record-name $prefix"$i"c --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"c|awk '{print $1}') > /dev/null 2>&1
- doctl compute domain records create $domain --record-type A --record-name 1 --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"a|awk '{print $1}')
- doctl compute domain records create $domain --record-type CNAME --record-name "*.1" --record-ttl 150 --record-data $prefix"$i"a.$domain.
+ doctl compute domain records create $domain --record-type A --record-name 1 --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"a|awk '{print $1}') > /dev/null 2>&1
+ doctl compute domain records create $domain --record-type CNAME --record-name "*.$i" --record-ttl 150 --record-data "$i".$domain. > /dev/null 2>&1
 done
 echo "$GREEN" "ok" "$NORMAL"
-
+exit
 sleep 10
 
 echo -n " updating sshd "
@@ -88,5 +88,5 @@ echo "===== Cluster ====="
 doctl compute droplet list --no-header |grep $prefix
 
 echo ""
-echo " to kill : $GREEN for i in \$(doctl compute droplet list --no-header|grep $prefix|awk '{print \$1}'); do doctl compute droplet delete --force \$i; done ; for i in \$(doctl compute domain records list $domain --no-header|grep $prefix|awk '{print \$1}'); do doctl compute domain records delete $domain \$i --force; done; rm -rf hosts.txt sshkey* $NORMAL"
+echo " to kill : $GREEN for i in \$(doctl compute droplet list --no-header|grep $prefix|awk '{print \$1}'); do doctl compute droplet delete --force \$i; done ; for i in \$(doctl compute domain records list $domain --no-header|grep $prefix|awk '{print \$1}'; doctl compute domain records list $domain --no-header|grep -w '1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11'|awk '{print \$1}' ); do doctl compute domain records delete $domain \$i --force; done; rm -rf hosts.txt sshkey* $NORMAL"
 
