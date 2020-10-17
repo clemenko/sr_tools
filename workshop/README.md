@@ -176,7 +176,7 @@ There are two models we can use when deploying the platform. Hub and Spoke or De
 
 There are two basic methods of install, Online and Offline. This workshop will assume online. If you are curious about the offline install here is [guide](https://github.com/clemenko/sr_tools/tree/main/stackrox_offline). :D
 
-### Install Offline assuming no registry
+### Install Offline - no registry
 
 For this workshop we have preloaded the offline tar for you. Here is a script that can help automate getting all the parts: https://github.com/clemenko/sr_tools/blob/main/stackrox_offline/getoffline_stackrox.sh.
 
@@ -189,19 +189,76 @@ cd stackrox_offline
 tar -zxvf stackrox_offline_3.0.50.0.tgz
 tar -zxvf image-collector-bundle_3.0.50.0.tgz
 
-# load the images onto every node
-for i in $(ls image-bundle/*.img); do docker load -i $i; done
-for i in $(ls image-collector-bundle/*.img); do docker load -i $i; done
+# load the images onto every node for docker
+# for i in $(ls image-bundle/*.img); do docker load -i $i; done
+# for i in $(ls image-collector-bundle/*.img); do docker load -i $i; done
+
+# load the images into containerd on every node
+for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done
+for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done
+
+# for speed we can use pdsh for the win
+echo search stackrox.live >> /etc/resolv.conf
+export PDSH_RCMD_TYPE=ssh
+pdsh -l root -w student1a,student1b,student1c 'tar -zvxf all_the_things_3.0.50.0.tar.gz; cd stackrox_offline; tar -zxvf stackrox_offline_3.0.50.0.tgz; tar -zxvf image-collector-bundle_3.0.50.0.tgz; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
 
 # when running the `roxctl` command make sure to add `--offline` and `--enable-telemetry=false`
+cd ..
+roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --offline
 
-# run sed to remove image pull secrets
+# modify the HPA for the scanner
+sed -i -e 's/replicas: 3/replicas: 1/g' ./central-bundle/scanner/02-scanner-06-deployment.yaml
+sed -i -e 's/minReplicas: 2/minReplicas: 1/g' central-bundle/scanner/02-scanner-08-hpa.yaml
 
-# create namespace ahead of time
-kubectl create ns stackrox
-
+# create namespace
 # skip the `setup.sh` and apply away
+kubectl create ns stackrox
+kubectl apply -R -f central-bundle/central
+kubectl apply -R -f central-bundle/scanner
 
+# watch it all come up
+watch kubectl get pod -n stackrox
+
+# make note that the admin password for the platform is here
+cat central-bundle/password
+# add password variable
+export password=$(cat central-bundle/password)
+
+# how about a dashboard? CHANGE the $NUM to your student number.
+# and yes there are escape characters.
+
+cat <<EOF | kubectl apply -f -
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: stackrox-ingresstcp
+  namespace: stackrox
+spec:
+  entryPoints:
+    - tcp
+  routes:
+    - match: HostSNI(\`rox.$NUM.stackrox.live\`)
+      services:
+        - name: central
+          port: 443
+  tls:
+    passthrough: true
+EOF
+
+# navigate to https://rox.$NUM.stackrox.live !
+
+# now we can create the sensor
+roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password
+
+# and deploy the sensors
+sed -i -e "s/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g" sensor-k3s/sensor.yaml
+kubectl apply -R -f sensor-k3s/
+
+# watch it come up
+watch kubectl get pod -n stackrox
+
+# last thing is to load the cve database
+roxctl scanner upload-db -e rox.$NUM.stackrox.live:443 --scanner-db-file=scanner-vuln-updates.zip --insecure-skip-tls-verify -p $password
 ```
 
 ### Install Online
@@ -253,6 +310,11 @@ EOF
 # navigate to https://rox.$NUM.stackrox.live !
 
 # lets set up the scanner now
+# modify the HPA for the scanner
+sed -i -e 's/replicas: 3/replicas: 1/g' ./central-bundle/scanner/02-scanner-06-deployment.yaml
+sed -i -e 's/minReplicas: 2/minReplicas: 1/g' central-bundle/scanner/02-scanner-08-hpa.yaml
+
+# deploy the scanner
 ./central-bundle/scanner/scripts/setup.sh
 kubectl apply -R -f central-bundle/scanner
 
@@ -276,6 +338,8 @@ Now check the gui at https://rox.$NUM.stackrox.live/main/clusters
 ![sr_up](./images/sr_up.jpg)
 
 ### Authentication
+
+There are a lot of options for authenticating to the StackRox platform. We are not going to cover them in the workshop since it requires an external provider. One such is [Keycloak](https://www.keycloak.org/getting-started/getting-started-kube). Keycloak can be used for SAML2. The StackRox platform can also PKI for authentication. 
 
 ### Policies
 
@@ -424,5 +488,35 @@ sed -i 's/stackrox.dockr.life/rox.$NUM.stackrox.live/g' stackrox_classifications
 
 # now we can run it for the 
 ./stackrox_classifications.sh TS
+```
+
+#### Compliance Scan Results
+
+How about a handy script to use the API to request a compliance scan. Then save the result as json.
+
+```bash
+# get the script
+wget https://raw.githubusercontent.com/clemenko/sr_tools/main/stackrox_compliance_scan.sh
+chmod 755 stackrox_compliance_scan.sh
+
+# run it
+# the script will ask for the admin password
+# the script will set up an api token with the correct rbac
+./stackrox_compliance_scan.sh rox.$NUM.stackrox.live
+
+# here is an example output
+root@student1a:~# head rox.1.stackrox.live_k3s_NIST_800_190_Results_10-17-20.json 
+{
+  "results": {
+    "domain": {
+      "id": "380ecdd4-1686-49bb-a9ad-f1826aaeca53",
+      "cluster": {
+        "id": "f741b11d-1d7a-46b9-930b-bd4f2d226d2a",
+        "name": "k3s",
+        "type": "KUBERNETES_CLUSTER",
+        "mainImage": "stackrox.io/main",
+        "collectorImage": "",
+
+```
 
 ## Questions, Thoughts...

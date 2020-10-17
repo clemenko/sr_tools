@@ -59,7 +59,7 @@ echo "$GREEN" "ok" "$NORMAL"
 sleep 15
 
 echo -n " adding os packages "
-pdsh -l root -w $host_list 'export DEBIAN_FRONTEND=noninteractive; apt update; sleep 2; apt install jq -y #apt upgrade -y; #apt autoremove -y ' > /dev/null 2>&1
+pdsh -l root -w $host_list 'export DEBIAN_FRONTEND=noninteractive; apt update; sleep 2; apt install jq pdsh -y #apt upgrade -y; #apt autoremove -y ' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " updating sshd "
