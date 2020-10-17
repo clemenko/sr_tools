@@ -15,8 +15,9 @@
   - Authentication
   - Policies
     - Stages
-  - Integrations
+  - Integrations & Plugins
   - API & Tokens
+  - Documentation
   - Troubleshooting
 - Demo
 
@@ -35,7 +36,9 @@
 Every student will get 3 vms to set up as a [k3s](https://k3s.io) cluster. The instructor will assign the student a number. To connect with a root password of `Pa22word`:
 
 ```bash
-ssh root@student1a.stackrox.live
+# Change $NUM to your student number
+
+ssh root@student$NUMa.stackrox.live
 ```
 
 ## K3s
@@ -44,7 +47,7 @@ Lets deploys [k3s](https://k3s.io). From the 1A node we will run all the command
 
 ```bash
 # set student number
-export num=1
+export NUM=1
 # get ip addresses
 export ipa=$(dig +short student1a.stackrox.live)
 export ipb=$(dig +short student1b.stackrox.live)
@@ -58,7 +61,7 @@ k3sup install --ip $ipa --user root --k3s-extra-args '--no-deploy traefik' --clu
 k3sup join --ip $ipb --server-ip $ipa --user root
 k3sup join --ip $ipc --server-ip $ipa --user root
 
-# Wait about 30 seconds to see the nodes are coming online.
+# Wait about 15 seconds to see the nodes are coming online.
 
 kubectl get node -o wide
 ```
@@ -123,9 +126,9 @@ kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/depl
 kubectl patch storageclass longhorn -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 
-# to verify that longhorn is the default
+# to verify that longhorn is the default storage class
 
-kubectl  get sc
+kubectl get sc
 
 # Watch it coming up
 
@@ -168,6 +171,8 @@ tl:dr three major pieces
 - Central
 - Scanner
 - Sensor/Collector
+
+There are two models we can use when deploying the platform. Hub and Spoke or Decoupled. I highly recommend deploying in a decoupled model. Decoupled means that every kubernetes cluster will get their own Central. This will allow for greater flexibility and stability.
 
 There are two basic methods of install, Online and Offline. This workshop will assume online. If you are curious about the offline install here is [guide](https://github.com/clemenko/sr_tools/tree/main/stackrox_offline). :D
 
@@ -223,7 +228,7 @@ EOF
 kubectl apply -R -f central-bundle/scanner
 
 # verify everything is up
-kubectl get pod -n stackrox
+watch kubectl get pod -n stackrox
 
 # one last step, add the sensors. Again change the $NUM to point to your setup.
 # This will create a directory called `sensor-k3s`
@@ -239,18 +244,136 @@ watch kubectl get pod -n stackrox
 
 Now check the gui at https://rox.$NUM.stackrox.live/main/clusters 
 
-![sr_up](./sr_up.jpg)
+![sr_up](./images/sr_up.jpg)
 
 ### Authentication
 
 ### Policies
 
+Out of the box StackRox ships with 64 System Policies. Navigate to https://rox.1.stackrox.live/main/policies to see the policies. Or click **PLATFORM CONFIGURATION --> SYSTEM POLICIES**.
+
+![policy1](./images/policy1.jpg)
+
+While we can edit the policies, I would suggest looking at the import/export features. This is will allow for greater automation of clusters.
+
+Lets edit a policy the `nmap Execution` policy. Search for it in the search field.
+
+![nmap](./images/nmap.jpg)
+
+From there we can click on the policy and then click edit it the top right.
+
+![nmap](./images/edit_nmap.jpg)
+
+With the edit tab open click the right arrow to get to the next page. This is the Policy Criteria page. Click it again to see the Violations Preview page. Click again to see the Execution page. Scroll down and enable the Runtime Execution. Click the disk icon to Save the policy.
+
+![nmap](./images/runtime_nmap.jpg)
+
+We know have Runtime enforcement for nmap execution.
+
 #### Stages
 
-### Integrations
+Stages refers to the different policy stages. As with the example for the `nmap Execution` policy we can start to see the three stages for policies. The three stages are:
+
+- Build - Focused on CI/CD interaction with Central/Scanner
+- Deploy - Admission Controller
+- Runtime - Dynamic Runtime defense
+
+Each stage has policies uniquely written for it. Some policies are geared for the Build and Deploy stage.
+
+### Integrations & Plugins
+
+The StackRox platform is not a walled garden of knowledge! Navigate to **PLATFORM CONFIGURATION --> INTEGRATIONS** or https://rox.1.stackrox.live/main/integrations.
+
+![integrations](./images/integrations.jpg)
+
+Here we can edit the integrations for setting up external scanners, registries, Slack, Jira, and other plugins.
+
+![plugins](./images/plugins.jpg)
+
+This is also the page where we can create an API Token for use with curl or the Jenkins plugin.
 
 ### API & Tokens
 
+The StackRox platform ships with a completely documented API interface. In the lower left hand corner click the **API REFERENCE** button
+
+![api](./images/api.jpg)
+
+We can navigate to **PLATFORM CONFIGURATION --> INTEGRATIONS** and scroll down to **AUTHENTICATION TOKENS**. Once there click the plus symbol in the upper right hand of the page. Here we can create a token with a specific role.
+
+![api_token](./images/api_token.jpg)
+
+OR...
+
+```bash
+# lets create a toke with the API.
+curl -sk -X POST -u admin:$password https://rox.$NUM.stackrox.live/v1/apitokens/generate -d '{"name":"jenkins","role":null,"roles":["Continuous Integration"]}'| jq -r .token > jenkins_API_TOKEN
+
+# we can export it as a variable for use with roxctl
+export ROX_API_TOKEN=$(cat jenkins_API_TOKEN)
+```
+
+#### Scanner Integration
+
+There are two simple ways to integrate with the StackRox scanner. The first way is with the Jenkins plugin. We may cover that later if there is time. The second way is with the `roxctl` binary. This binary was preinstalled onto the first node ahead of time.
+
+```bash
+# verify the api token is ready for use
+echo $ROX_API_TOKEN
+
+# now we are ready for asking the scanner to scan an image.
+# we can use jq to pretty it up
+# keep in mind it will take about 30 seconds to complete
+roxctl image scan -e rox.$NUM.stackrox.live:443 --image "clemenko/jenkins" --insecure-skip-tls-verify | jq .
+
+# we can also use the check function to check the image against Build System Policies
+roxctl image check -e rox.$NUM.stackrox.live:443 --image "clemenko/jenkins" --insecure-skip-tls-verify
+
+# here is a sample output
+✗ Image clemenko/jenkins failed policy 'Fixable CVSS >= 7' (policy enforcement caused failure)
+- Description:
+    ↳ Alert on deployments with fixable vulnerabilities with a CVSS of at least 7
+- Rationale:
+    ↳ Known vulnerabilities make it easier for adversaries to exploit your
+      application. You can fix these high-severity vulnerabilities by updating to a
+      newer version of the affected component(s).
+- Remediation:
+    ↳ Use your package manager to update to a fixed version in future builds or speak
+      with your security team to mitigate the vulnerabilities.
+- Violations:
+    - Fixable CVE-2012-0785 (CVSS 7.5) found in component 'jenkins' (version 1.1), resolved by version 1.424.2
+    - Fixable CVE-2012-4438 (CVSS 8.8) found in component 'jenkins' (version 1.1), resolved by version 1.466.2
+    - Fixable CVE-2020-10518 (CVSS 8.8) found in component 'github' (version 1.31.0), resolved by version 2.19.21
+
+Error: Violated a policy with CI enforcement set
+
+```
+
+### Documentation
+
+Similar to the API, the StackRox platform ships with a copy of the complete documentation. In the lower left hand corner click the **HELP CENTER** button. Or Navigate to https://rox.$NUM.stackrox.live/docs/product/
+
+![help](./images/help.jpg)
+
 ### Troubleshooting
+
+When troubleshooting StackRox there are two main tools to use. The first one is using kubectl to validate the Central pod is running. Ate the same time we can validate that all the pods are running correctly. Make sure you run the `kubectl` command on the cluster where the components are installed.
+
+```bash
+root@student1a:~# kubectl get pod -n stackrox
+NAME                          READY   STATUS    RESTARTS   AGE
+scanner-db-7964d4794d-ktvmm   1/1     Running   0          80m
+central-57c48f8fdc-mmmsq      1/1     Running   0          81m
+scanner-96bfb87df-hcr5b       1/1     Running   0          80m
+scanner-96bfb87df-h5dfr       1/1     Running   0          80m
+collector-2mhfh               2/2     Running   0          79m
+collector-8j77w               2/2     Running   0          79m
+collector-mp954               2/2     Running   0          79m
+sensor-5ccbc8858d-kkndf       1/1     Running   0          79m
+```
+
+The second tool is using Central's gui. The gui can help show the current stat of all the components as well.
+
+![health](./images/health.jpg)
+
 
 ## Questions, Thoughts...

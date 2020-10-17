@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=2 # of $prefix"
+num=1 # of $prefix"
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -54,8 +54,12 @@ for i in $(seq 1 $num); do
  doctl compute domain records create $domain --record-type CNAME --record-name "*.$i" --record-ttl 150 --record-data "$i".$domain. > /dev/null 2>&1
 done
 echo "$GREEN" "ok" "$NORMAL"
-exit
+
 sleep 10
+
+echo -n " adding os packages "
+pdsh -l root -w $host_list 'apt update; export DEBIAN_FRONTEND=noninteractive; #apt upgrade -y; apt install jq -y; apt autoremove -y ' > /dev/null 2>&1
+echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " updating sshd "
 pdsh -l root -w $host_list 'echo "root:Pa22word" | chpasswd; sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config; systemctl restart sshd' > /dev/null 2>&1
@@ -77,7 +81,7 @@ done
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " preload the offline bundle "
-pdsh -l root -w $host_list 'curl -# https://andyc.info/rox/all_the_things_3.0.50.0.tar.gz -o /root/all_the_things_3.0.50.0.tar.gz'
+pdsh -l root -w $host_list 'curl -# https://andyc.info/rox/all_the_things_3.0.50.0.tar.gz -o /root/all_the_things_3.0.50.0.tar.gz' > /dev/null 2>&1
 for i in $(seq 1 $num); do
   rsync -avP stackrox.lic root@$prefix"$i"a.$domain:/root/  > /dev/null 2>&1
 done
