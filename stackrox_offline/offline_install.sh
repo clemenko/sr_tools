@@ -43,7 +43,7 @@ for i in $(ls image-bundle/*.img); do docker load -i $i; done
 for i in $(ls image-collector-bundle/*.img); do docker load -i $i; done
 
 #generate stackrox install
-roxctl central generate k8s none --offline --enable-telemetry=false --lb-type np --password $password
+roxctl central generate k8s none --offline --enable-telemetry=false --lb-type np --offline --password $password
 
 #reduce StackRox requirements
 sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' ./central-bundle/central/01-central-12-deployment.yaml 

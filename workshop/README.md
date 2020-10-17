@@ -10,8 +10,8 @@
   - Ingress
   - Storage
 - StackRox
-  - Install
-    - Interactive / Automated
+  - Install Offline
+  - Install Online
   - Authentication
   - Policies
     - Stages
@@ -176,6 +176,34 @@ There are two models we can use when deploying the platform. Hub and Spoke or De
 
 There are two basic methods of install, Online and Offline. This workshop will assume online. If you are curious about the offline install here is [guide](https://github.com/clemenko/sr_tools/tree/main/stackrox_offline). :D
 
+### Install Offline assuming no registry
+
+For this workshop we have preloaded the offline tar for you. Here is a script that can help automate getting all the parts: https://github.com/clemenko/sr_tools/blob/main/stackrox_offline/getoffline_stackrox.sh.
+
+```bash
+# uncompress the complete bundle
+tar -zvxf all_the_things_3.0.50.0.tar.gz
+
+# uncompress the smaller tars
+cd stackrox_offline
+tar -zxvf stackrox_offline_3.0.50.0.tgz
+tar -zxvf image-collector-bundle_3.0.50.0.tgz
+
+# load the images onto every node
+for i in $(ls image-bundle/*.img); do docker load -i $i; done
+for i in $(ls image-collector-bundle/*.img); do docker load -i $i; done
+
+# when running the `roxctl` command make sure to add `--offline` and `--enable-telemetry=false`
+
+# run sed to remove image pull secrets
+
+# create namespace ahead of time
+kubectl create ns stackrox
+
+# skip the `setup.sh` and apply away
+
+```
+
 ### Install Online
 
 ```bash
@@ -185,7 +213,8 @@ export REGISTRY_USERNAME=andy@stackrox.com
 export REGISTRY_PASSWORD=blahblah2020
 
 # Now lets create the yamls from `roxctl`.
-# This will output to a directory `central-bundle`.
+# This will output to a directory `central-bundle`
+# -- don't forget to add `--offline` to this command if you are offline --
 roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none
 
 # make note that the admin password for the platform is here
