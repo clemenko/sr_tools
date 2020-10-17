@@ -1,3 +1,3 @@
-167.71.180.168 student1b
-167.71.181.11 student1a
-104.131.177.161 student1c
+68.183.156.102 student1a
+104.131.116.209 student1c
+104.131.178.35 student1b

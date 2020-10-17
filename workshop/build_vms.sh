@@ -25,6 +25,10 @@ command -v curl >/dev/null 2>&1 || { echo "$RED" " ** Curl was not found. Please
 command -v jq >/dev/null 2>&1 || { echo "$RED" " ** Jq was not found. Please install before preceeding. ** " "$NORMAL" >&2; exit 1; }
 command -v pdsh >/dev/null 2>&1 || { echo "$RED" " ** Pdsh was not found. Please install before preceeding. ** " "$NORMAL" >&2; exit 1; }
 
+################################# up ################################
+function up () {
+export PDSH_RCMD_TYPE=ssh
+
 build_list=""
 for i in $(seq 1 $num); do
  build_list="$prefix"$i"a $build_list"
@@ -58,7 +62,7 @@ echo "$GREEN" "ok" "$NORMAL"
 sleep 10
 
 echo -n " adding os packages "
-pdsh -l root -w $host_list 'apt update; export DEBIAN_FRONTEND=noninteractive; #apt upgrade -y; apt install jq -y; apt autoremove -y ' > /dev/null 2>&1
+pdsh -l root -w $host_list 'apt update; export DEBIAN_FRONTEND=noninteractive; #apt upgrade -y; apt install jq -y; apt autoremove -y '
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " updating sshd "
@@ -90,7 +94,24 @@ echo "$GREEN" "ok" "$NORMAL"
 echo ""
 echo "===== Cluster ====="
 doctl compute droplet list --no-header |grep $prefix
+}
 
-echo ""
-echo " to kill : $GREEN for i in \$(doctl compute droplet list --no-header|grep $prefix|awk '{print \$1}'); do doctl compute droplet delete --force \$i; done ; for i in \$(doctl compute domain records list $domain --no-header|grep $prefix|awk '{print \$1}'; doctl compute domain records list $domain --no-header|grep -w '1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11'|awk '{print \$1}' ); do doctl compute domain records delete $domain \$i --force; done; rm -rf hosts.txt sshkey* $NORMAL"
+############################## kill ################################
+#remove the vms
+function kill () {
+echo -n " killing it all "
+for i in $(doctl compute droplet list --no-header|grep $prefix|awk '{print $1}'); do 
+  doctl compute droplet delete --force $i
+done
+for i in $(doctl compute domain records list $domain --no-header|grep $prefix|awk '{print $1}'; doctl compute domain records list $domain --no-header|grep -w '1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11'|awk '{print $1}' ); do 
+  doctl compute domain records delete $domain $i --force
+done
+rm -rf hosts.txt sshkey*
+echo "$GREEN" "ok" "$NORMAL"
+}
 
+case "$1" in
+        up) up;;
+        kill) kill;;
+        *) echo " Usage: $0 {up|kill}";;
+esac
