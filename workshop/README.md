@@ -375,5 +375,25 @@ The second tool is using Central's gui. The gui can help show the current stat o
 
 ![health](./images/health.jpg)
 
+### Bonus Tips
+
+#### Classification Banners
+
+The settings for the classification banners are located in **PLATFORM CONFIGURATION --> SYSTEM CONFIGURATION**. Here you can change all the settings as needed.
+
+![banners](./images/banners.jpg)
+
+OR you can use a handy script in this repo.
+
+```bash
+# get the script
+wget https://raw.githubusercontent.com/clemenko/sr_tools/main/stackrox_classifications.sh
+chmod 755 stackrox_classifications.sh
+
+# we need to change the server in the script
+sed -i 's/stackrox.dockr.life/rox.$NUM.stackrox.live/g' stackrox_classifications.sh
+
+# now we can run it for the 
+./stackrox_classifications.sh TS
 
 ## Questions, Thoughts...
