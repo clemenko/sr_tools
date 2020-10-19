@@ -20,6 +20,12 @@
   - Documentation
   - Troubleshooting
 - Demo
+  - Compliance
+  - Network
+  - Violations
+  - Vulnerability Management
+  - Risk
+  - CI/CD
 
 ### Workshop Pre-requisites
 
@@ -181,29 +187,19 @@ There are two basic methods of install, Online and Offline. This workshop will a
 For this workshop we have preloaded the offline tar for you. Here is a script that can help automate getting all the parts: https://github.com/clemenko/sr_tools/blob/main/stackrox_offline/getoffline_stackrox.sh.
 
 ```bash
-# uncompress the complete bundle
-tar -zvxf all_the_things_3.0.50.0.tar.gz
-
-# uncompress the smaller tars
-cd stackrox_offline
-tar -zxvf stackrox_offline_3.0.50.0.tgz
-tar -zxvf image-collector-bundle_3.0.50.0.tgz
-
-# load the images onto every node for docker
-# for i in $(ls image-bundle/*.img); do docker load -i $i; done
-# for i in $(ls image-collector-bundle/*.img); do docker load -i $i; done
-
-# load the images into containerd on every node
-for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done
-for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done
-
-# for speed we can use pdsh for the win
-echo search stackrox.live >> /etc/resolv.conf
+# make pdsh work
 export PDSH_RCMD_TYPE=ssh
-pdsh -l root -w student1a,student1b,student1c 'tar -zvxf all_the_things_3.0.50.0.tar.gz; cd stackrox_offline; tar -zxvf stackrox_offline_3.0.50.0.tgz; tar -zxvf image-collector-bundle_3.0.50.0.tgz; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
+
+# uncompress the complete bundle on all nodes
+pdsh -l root -w student1a,student1b,student1c 'tar -zvxf all_the_things_3.0.50.0.tar.gz'
+
+# uncompress the smaller tars on all nodes
+pdsh -l root -w student1a,student1b,student1c 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.50.0.tgz; tar -zxvf image-collector-bundle_3.0.50.0.tgz'
+
+# load the images into containerd on all nodes
+pdsh -l root -w student1a,student1b,student1c 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
 
 # when running the `roxctl` command make sure to add `--offline` and `--enable-telemetry=false`
-cd ..
 roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --offline
 
 # modify the HPA for the scanner
@@ -258,7 +254,7 @@ kubectl apply -R -f sensor-k3s/
 watch kubectl get pod -n stackrox
 
 # last thing is to load the cve database
-roxctl scanner upload-db -e rox.$NUM.stackrox.live:443 --scanner-db-file=scanner-vuln-updates.zip --insecure-skip-tls-verify -p $password
+roxctl scanner upload-db -e rox.$NUM.stackrox.live:443 --scanner-db-file=stackrox_offline/scanner-vuln-updates.zip --insecure-skip-tls-verify -p $password
 ```
 
 ### Install Online
@@ -519,4 +515,13 @@ root@student1a:~# head rox.1.stackrox.live_k3s_NIST_800_190_Results_10-17-20.jso
 
 ```
 
-## Questions, Thoughts...
+## Demo
+
+- Compliance
+- Network
+- Violations
+- Vulnerability Management
+- Risk
+- CI/CD
+
+## Questions, Thoughts
