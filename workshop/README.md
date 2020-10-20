@@ -4,37 +4,35 @@
 
 ## Agenda
 
-- Quick Intro
-- Access to VMS
-- Simple Kubernetes deployment - K3s
-  - Ingress
-  - Storage
-- StackRox
-  - Install Offline
-  - Install Online
-  - Authentication
-  - Policies
-    - Stages
-  - Integrations & Plugins
-  - API & Tokens
-  - Documentation
-  - Troubleshooting
-- StackRox Demo
+- [Pre-requisites](#Pre-requisites)
+- [Access to VMS](#access-to-vms)
+- [Simple Kubernetes deployment - K3s](#k3s)
+  - [Ingress](#Ingress)
+  - [Storage](#Storage)
+- [StackRox](#stackrox)
+  - [Install Offline](#Install-Offline---no-registry)
+  - [Install Online](#Install-Online)
+  - [Authentication](#Authentication)
+  - [Policies](#Policies)
+    - [Stages](#Stages)
+  - [Integrations & Plugins](#Integrations-&-Plugins)
+  - [API & Tokens](#API-&-Tokens)
+  - [Documentation](#Documentation)
+  - [Troubleshooting](#Troubleshooting)
+- [StackRox Demo](#StackRox-Demo)
   - Compliance
   - Network
   - Violations
   - Vulnerability Management
   - Risk
   - CI/CD
+- [Questions, Thoughts](#Questions,-Thoughts)
 
-### Workshop Pre-requisites
+## Pre-requisites
 
 - Basic Linux command line skills
 - Familiarity with a text editor (Visual Studio, emacs, vi, etc.)
 - Bring your own laptop
-
-## How this workshop works
-
 - ASK QUESTIONS!
 
 ## Access to Vms
