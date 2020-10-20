@@ -180,6 +180,8 @@ There are two models we can use when deploying the platform. Hub and Spoke or De
 
 There are two basic methods of install, Online and Offline. This workshop will assume online. If you are curious about the offline install here is [guide](https://github.com/clemenko/sr_tools/tree/main/stackrox_offline). :D
 
+Please also keep in mind that there are several options for loading images to the cluster. Below are two such options.
+
 ### Install Offline - no registry
 
 For this workshop we have preloaded the offline tar for you. Here is a script that can help automate getting all the parts: https://github.com/clemenko/sr_tools/blob/main/stackrox_offline/getoffline_stackrox.sh.
