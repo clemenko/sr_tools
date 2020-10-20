@@ -1,4 +1,4 @@
-# StackRox Workshop
+# StackRox Workshop - https://andyc.info/roxshop
 
 #### clemenko@stackrox.com | [@clemenko](https://twitter.com/clemenko)
 
@@ -19,7 +19,7 @@
   - API & Tokens
   - Documentation
   - Troubleshooting
-- Demo
+- StackRox Demo
   - Compliance
   - Network
   - Violations
@@ -515,7 +515,7 @@ root@student1a:~# head rox.1.stackrox.live_k3s_NIST_800_190_Results_10-17-20.jso
 
 ```
 
-## Demo
+## StackRox Demo
 
 - Compliance
 - Network
