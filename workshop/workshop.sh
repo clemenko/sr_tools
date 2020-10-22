@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=1 # of $prefix"
+num=8 # of $prefix"
 prefix=student
 password=Pa22word
 zone=nyc3
