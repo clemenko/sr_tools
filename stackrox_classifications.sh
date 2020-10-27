@@ -43,6 +43,11 @@ get_password
 curl -sk -X PUT -u admin:$password https://$central_server/v1/config -d '{"config":{"publicConfig":{"loginNotice":{"enabled":false,"text":"'"$gov_message"'"},"header":{"enabled":false,"text":"","size":"MEDIUM","color":"#ffffff","backgroundColor":"#f0ad4e"},"footer":{"enabled":false,"text":"","size":"MEDIUM","color":"#ffffff","backgroundColor":"#f0ad4e"}},"privateConfig":{"alertConfig":{"resolvedDeployRetentionDurationDays":7,"deletedRuntimeRetentionDurationDays":7,"allRuntimeRetentionDurationDays":30},"imageRetentionDurationDays":7}}}' > /dev/null 2>&1
 ;;
 
-        *) echo "Usage: $0 {clear | TS | S | U}"; exit 1
+PARTY )
+get_password
+curl -sk -X PUT -u admin:$password https://$central_server/v1/config -d '{"config":{"publicConfig":{"loginNotice":{"enabled":false,"text":""},"header":{"enabled":true,"text":"PARTY MODE","size":"MEDIUM","color":"#ffffff","backgroundColor":"#f04ed3"},"footer":{"enabled":true,"text":"PARTY MODE","size":"MEDIUM","color":"#ffffff","backgroundColor":"#f04ed3"}},"privateConfig":{"alertConfig":{"resolvedDeployRetentionDurationDays":7,"deletedRuntimeRetentionDurationDays":7,"allRuntimeRetentionDurationDays":30},"imageRetentionDurationDays":7}}}' > /dev/null 2>&1
+;;
+
+        *) echo "Usage: $0 {clear | TS | S | U | PARTY }"; exit 1
 
 esac
