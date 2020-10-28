@@ -1,10 +1,13 @@
 #!/bin/bash
 # clemenko@stackrox.com
 
+# supported standards CIS_Kubernetes_v1_5 HIPAA_164 NIST_800_190 NIST_SP_800_53_Rev_4 PCI_DSS_3_2 CIS_Docker_v1_2_0
 standardId="NIST_800_190"
-#supported standards CIS_Kubernetes_v1_5 HIPAA_164 NIST_800_190 NIST_SP_800_53_Rev_4 PCI_DSS_3_2 CIS_Docker_v1_2_0
-###### no more edits
 
+# output formats are json or csv
+output_format=csv
+
+###### no more edits
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
@@ -31,7 +34,7 @@ function setup () {  # setup role and token
 
 echo -e "\n StackRox Complaince Automation Script"
 echo " - Inputs: ./stackrox_compliance_scan.sh <SERVER NAME>"
-echo " - Outputs: <SERVERNAME>_<CLUSTERNAME>_<STANDARD>_Results_$(date +"%m-%d-%y").json"
+echo " - Outputs: <SERVERNAME>_<CLUSTERNAME>_<STANDARD>_Results_$(date +"%m-%d-%y").$output_format"
 echo -e "----------------------------------------------------------------------------------\n"
 
 serverUrl=$1
@@ -45,15 +48,26 @@ export token=$(cat stackrox_api.token)
 
 echo -n "Running $standardId scan on $serverUrl "
 
-#get clusterId
+# get clusterId, can be tuned per cluster
 clusterId=$(curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/clusters | jq -r .clusters[0].id)
 
+# get the clustername from id
 clusterName=$(curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/clusters/$clusterId | jq -r .cluster.name)
 
+# run a scan and get the runid
 runId=$(curl -sk -X POST -H "Authorization: Bearer $token" https://$serverUrl/v1/compliancemanagement/runs -d '{"selection": { "clusterId": "'"$clusterId"'", "standardId": "'"$standardId"'" }}' | jq -r .startedRuns[0].id)
 
+# wait for scan to complete
 until [ "$(curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/complianceManagement/runs | jq -r '.complianceRuns[]|select(.id=="'"$runId"'") | .state' )" == "FINISHED" ]; do echo -n "."; sleep 1; done
 
-curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/compliance/runresults?clusterId="$clusterId"'&standardId='$standardId'&runId='$runId'' | jq . > "$serverUrl"_"$clusterName"_"$standardId"_Results_$(date +"%m-%d-%y").json
+if [[ "$output_format" = "json" ]]; then
+  # get results in json
+  curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/compliance/runresults?clusterId="$clusterId"'&standardId='$standardId'&runId='$runId'' | jq . > "$serverUrl"_"$clusterName"_"$standardId"_Results_$(date +"%m-%d-%y").json
+fi
+
+if [[ "$output_format" = "csv" ]]; then
+  # get results in csv
+  curl -sk -H "Authorization: Bearer $token" https://$serverUrl/api/compliance/export/csv?clusterId="$clusterId"'&standardId='$standardId'&runId='$runId'' > "$serverUrl"_"$clusterName"_"$standardId"_Results_$(date +"%m-%d-%y").csv 
+fi
 
 echo -e "$GREEN" "[ok]" "$NORMAL\n"
