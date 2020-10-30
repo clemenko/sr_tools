@@ -36,7 +36,7 @@ Next click the **Credentials** tab to get the secret.
 
 Next click the **Users** on the left and **Add User**. This should be obvious. Next click the **Credentials** tab to enter a password. Also make sure `Temporary` is off. And click `Reset Password`
 
-## Configure StackRox
+## Configure StackRox OpenID
 
 ### Add Auth Provider
 
@@ -55,3 +55,50 @@ Then **Add an Auth Provider --> OpenID Connect**
 `Client Secret` : "From the keycloak client credentials page."
 
 Click Save and Test.
+
+## Notes for Saml2
+
+### in Stackrox:
+
+Integration Name: Keycloak
+
+ServiceProvider Issuer: https://keycloak.url
+
+idP Issuer: https://keycloak.url/auth/realms/[yourrealm]
+
+IdP SSO URL: https://keycloak.url/auth/realms/[yourrealm]/protocol/saml/clients/[keycloak client name]
+
+Name/ID Format: urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+
+IdP Certificate (PEM): 
+(can be retrieved from https://keycloak.url/auth/realms/[yourrealm]/protocol/saml/descriptor, you have to add this part below:)
+
+-----BEGIN CERTIFICATE-----
+
+-----END CERTIFICATE-----
+
+### Keycloak Client:
+
+Client ID: https://[stackrox url]/login
+
+Base URL: [stackrox url]
+
+Name: keycloak
+
+Client Protocol: saml
+
+Include AuthnStatement: ON
+
+Sign Assertions: ON
+
+Force POST Binding: ON
+
+Name ID Format: username
+
+Valid Redirect URIs: https://[stackrox url]/*
+
+IDP Initiated SSO URL Name: stackrox
+
+Under Fine Grain SAML Endpoint Configuration
+
+Assertion COnsumer Service Redirect Binding URL: https://[stackrox url]/sso/providers/saml/acs
