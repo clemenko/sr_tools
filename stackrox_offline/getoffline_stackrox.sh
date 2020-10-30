@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #vars
-export version=3.0.50.1
+export version=3.0.51.0
 export username=andy@stackrox.com
 
 rm -rf *.tar.gz
@@ -35,4 +35,4 @@ rsync -avP all_the_things_$version.tar.gz new:~andyc/html/rox/
 rsync -avP roxctl new:~andyc/html/rox/
 
 #cleanup
-rm -rf *.tgz *.zip
+rm -rf *.tgz *.zip *.tar.gz
