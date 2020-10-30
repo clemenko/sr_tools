@@ -35,4 +35,4 @@ rsync -avP all_the_things_$version.tar.gz new:~andyc/html/rox/
 rsync -avP roxctl new:~andyc/html/rox/
 
 #cleanup
-rm -rf *.tgz *.zip *.tar.gz
+rm -rf *.tgz *.zip *.tar.gz roxctl
