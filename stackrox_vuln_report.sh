@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# script for pulling all vulns from the api
+# ac - 11/10/2020
+
 set -e
 
 if [[ -z "${ROX_ENDPOINT}" ]]; then
@@ -13,7 +17,7 @@ if [[ -z "${ROX_API_TOKEN}" ]]; then
 fi
 
 if [[ -z "$1" ]]; then
- echo >&2 "usage: $0.sh <namespace>"
+ echo >&2 "usage: $0 <namespace>"
  exit 1
 fi
 
