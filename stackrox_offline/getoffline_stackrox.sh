@@ -28,7 +28,7 @@ curl -#LO -u $username:$password -L https://install.stackrox.io/scanner/scanner-
 cd ..; tar --exclude=.DS_Store --exclude=all_the_things_* -zcvf stackrox_offline/all_the_things_$version.tar.gz stackrox_offline; cd stackrox_offline
 
 # get the roxctl
-curl -#L -u $username:$password -L https://install.stackrox.io/3.0.50.1/bin/Linux/roxctl -o roxctl
+curl -#L -u $username:$password -L https://install.stackrox.io/$version/bin/Linux/roxctl -o roxctl
 
 #rsync
 rsync -avP all_the_things_$version.tar.gz new:~andyc/html/rox/
