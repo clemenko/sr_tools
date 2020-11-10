@@ -13,7 +13,7 @@ if [[ -z "${ROX_API_TOKEN}" ]]; then
 fi
 
 if [[ -z "$1" ]]; then
- echo >&2 "usage: create-csv.sh <namespace>"
+ echo >&2 "usage: $0.sh <namespace>"
  exit 1
 fi
 
