@@ -2,3 +2,5 @@ all*gz
 stackrox.lic
 sshkey*
 hosts*
+*.token
+
