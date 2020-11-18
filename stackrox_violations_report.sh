@@ -45,7 +45,8 @@ echo -n "Getting Violations from $serverUrl for $namespace"
 
 if [[ "$output_format" = "json" ]]; then
   # get results in json
-  curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/alerts |jq '.alerts[]? | select(.deployment.namespace=="'$namespace'")' | jq . > "$serverUrl"_"$namespace"_Violations_$(date +"%m-%d-%y").json
+#  curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/alerts |jq '.alerts[]? | select(.deployment.namespace=="'$namespace'")' | jq . > "$serverUrl"_"$namespace"_Violations_$(date +"%m-%d-%y").json
+  curl -sk -H "Authorization: Bearer $token" https://$serverUrl/v1/alerts?query=Namespace%3A$namespace  | jq . > "$serverUrl"_"$namespace"_Violations_$(date +"%m-%d-%y").json
 fi
 
 echo -e "$GREEN" "[ok]" "$NORMAL\n"
