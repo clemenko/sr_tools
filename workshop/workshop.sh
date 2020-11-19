@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=1 # of $prefix"
+num=5 # of $prefix"
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -85,7 +85,7 @@ done
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " preload the offline bundle "
-pdsh -l root -w $host_list 'curl -# https://andyc.info/rox/all_the_things_3.0.50.0.tar.gz -o /root/all_the_things_3.0.50.0.tar.gz' > /dev/null 2>&1
+pdsh -l root -w $host_list 'curl -# https://andyc.info/rox/all_the_things_3.0.51.1.tar.gz -o /root/all_the_things_3.0.50.0.tar.gz' > /dev/null 2>&1
 for i in $(seq 1 $num); do
   rsync -avP stackrox.lic root@$prefix"$i"a.$domain:/root/  > /dev/null 2>&1
 done
