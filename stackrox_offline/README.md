@@ -4,11 +4,11 @@
 
 ### Get the tarball
 
-`curl -# https://andyc.info/rox/all_the_things_3.0.50.0.tar.gz -o all_the_things_3.0.50.0.tar.gz`
+`curl -# https://andyc.info/rox/all_the_things_3.0.52.0.tar.gz -o all_the_things_3.0.52.0.tar.gz`
 
-### untar all_the_things_3.0.50.0.tar.gz
+### untar all_the_things_3.0.52.0.tar.gz
 
-`tar -zxvf all_the_things_3.0.50.0.tar.gz; cd stackrox_offline`
+`tar -zxvf all_the_things_3.0.52.0.tar.gz; cd stackrox_offline`
 
 ### run the script
 
