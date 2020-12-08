@@ -51,7 +51,7 @@ From the StackRox gui, goto `Platform Configuration` --> `Integrations`. Scroll 
 
 Thats it.
 
-## Testing?
+## Testing
 
 From an alpine container withing the cluster.
 
