@@ -5,7 +5,7 @@
 standardId="NIST_800_190"
 
 # output formats are json or csv
-output_format=csv
+output_format=json
 
 ###### no more edits
 RED=$(tput setaf 1)
