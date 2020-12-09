@@ -2,19 +2,19 @@
 
 ## Install from the super bundle
 
-### Get the tarball
+### Get all the bits
 
-`curl -# https://andyc.info/rox/all_the_things_3.0.52.0.tar.gz -o all_the_things_3.0.52.0.tar.gz`
+`wget $(curl -s https://andyc.info/rox/|grep href| grep -v Index|awk -F">" '{print "https://andyc.info/rox/"$2}'|sed 's#</a##g')`
 
-### untar all_the_things_3.0.52.0.tar.gz
+### untar stackrox_all_*
 
-`tar -zxvf all_the_things_3.0.52.0.tar.gz; cd stackrox_offline`
+`tar -zxvf stackrox_all_*; cd stackrox_offline`
 
-### run the script
+### install on CentOS
 
 No registry `./offline_install.sh`
 
-with registry `workingonit.sh`
+with registry `/offline_registry_install.sh`
 
 ## Get the offline files directly
 
