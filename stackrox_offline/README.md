@@ -14,7 +14,7 @@
 
 No registry `./offline_install.sh`
 
-with registry `/offline_registry_install.sh`
+With registry `/offline_registry_install.sh`
 
 ## Get the offline files directly
 
