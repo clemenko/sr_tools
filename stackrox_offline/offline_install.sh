@@ -1,6 +1,10 @@
 #!/bin/bash
 
-export version=3.0.50.0
+# this script it intended for centos on an airgapped network. 
+# assumptions are made that some things are available.
+# this script also assumes all the images are loaded to the servers
+
+export version=3.0.52.1
 export password=Pa22word
 export server=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1|head -1)
 
@@ -22,8 +26,8 @@ yum update -y
 yum install -y https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
 
 #get kubectl
-#curl -L# https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
-#chmod 755 /usr/local/bin/kubectl
+curl -L# https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
+chmod 755 /usr/local/bin/kubectl
 
 #deploy k3s
 mkdir ~/.kube/

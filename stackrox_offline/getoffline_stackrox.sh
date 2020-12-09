@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # vars
-export version=3.0.52.0
+export version=3.0.52.1
 export username=andy@stackrox.com
 
 rm -rf *.tar.gz
@@ -29,14 +29,14 @@ echo -n "getting kernel support packages"
 curl -#LO -u $username:$password $(curl -sL -u $username:$password https://install.stackrox.io/collector/support-packages/index.html |grep .zip | head -1 | awk -F'"' '{print $4}')
 
 #compressing
-cd ..; tar --exclude=.DS_Store --exclude=all_the_things_* -zcvf stackrox_offline/all_the_things_$version.tar.gz stackrox_offline; cd stackrox_offline
+cd ..; tar --exclude=.DS_Store --exclude=stackrox_all_* -zcvf stackrox_offline/stackrox_all_$version.tar.gz stackrox_offline; cd stackrox_offline
 
 # get the roxctl
-curl -#L -u $username:$password -L https://install.stackrox.io/$version/bin/Linux/roxctl -o roxctl
+curl -#L -u $username:$password -L https://install.stackrox.io/$version/bin/Linux/roxctl -o roxctl_Linux_$version
 
 #rsync
-rsync -avP all_the_things_$version.tar.gz new:~andyc/html/rox/
-rsync -avP roxctl new:~andyc/html/rox/
+rsync -avP stackrox_all_$version.tar.gz new:~andyc/html/rox/
+rsync -avP roxctl_Linux_$version new:~andyc/html/rox/
 
 #cleanup
-rm -rf *.tgz *.zip *.tar.gz roxctl
+rm -rf *.tgz *.zip *.tar.gz roxctl_Linux_$version
