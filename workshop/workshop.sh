@@ -84,12 +84,13 @@ for i in $(seq 1 $num); do
   ssh-copy-id -i sshkey root@$prefix"$i"a.$domain > /dev/null 2>&1
   ssh-copy-id -i sshkey root@$prefix"$i"b.$domain > /dev/null 2>&1
   ssh-copy-id -i sshkey root@$prefix"$i"c.$domain > /dev/null 2>&1
-  rsync -avP master_build.sh root@$prefix"$i"a.$domain:/root/
+  rsync -avP master_build.sh root@$prefix"$i"a.$domain:/root/ > /dev/null 2>&1
 done
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " deploy k3s, traefik, and code-server "
-pdsh -l root -w $master_list '/root/master_build.sh'
+exit
+pdsh -l root -w $master_list '/root/master_build.sh' 
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " preload the offline bundle "

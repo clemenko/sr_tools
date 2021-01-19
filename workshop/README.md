@@ -82,7 +82,7 @@ student1c   Ready    <none>   39s     v1.18.10+k3s1   157.245.222.126   <none>  
 
 congrats you just built a 3 node k3s(k8s) cluster. Not that hard right?
 
-## Ingress - Done for you!
+## Ingress - Done
 
 If you can't tell I like easy and simple. This also applies to Ingress. For that [Traefik](https://traefik.io/) for the win!
 
