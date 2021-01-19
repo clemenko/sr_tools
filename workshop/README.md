@@ -6,9 +6,10 @@
 
 - [Pre-requisites](#Pre-requisites)
 - [Access to VMS](#access-to-vms)
-- [Simple Kubernetes deployment - K3s](#k3s)
-  - [Ingress](#Ingress)
-  - [Storage](#Storage)
+- [Simple Kubernetes deployment - K3s](#K3s---Done)
+  - [Ingress - Done](#Ingress---Done)
+  - [Storage - Done](#Storage---Done)
+  - [Code - Done](#Code---Done)
 - [StackRox](#stackrox)
   - [Install Offline](#Install-Offline---no-registry)
   - [Install Online](#Install-Online)
@@ -45,20 +46,19 @@ Every student will get 3 vms to set up as a [k3s](https://k3s.io) cluster. The i
 ssh root@student$NUMa.stackrox.live
 ```
 
-## K3s
+## K3s - Done
 
 Lets deploys [k3s](https://k3s.io). From the 1A node we will run all the commands. Don't for get to set the student number.
+
+But, here is how it is done.
 
 ```bash
 # set student number
 export NUM=1
 # get ip addresses
-export ipa=$(dig +short student1a.stackrox.live)
-export ipb=$(dig +short student1b.stackrox.live)
-export ipc=$(dig +short student1c.stackrox.live)
-
-# make kube dir
-mkdir ~/.kube
+export ipa=$(dig +short student"$NUM"a.stackrox.live)
+export ipb=$(dig +short student"$NUM"b.stackrox.live)
+export ipc=$(dig +short student"$NUM"c.stackrox.live)
 
 # k3sup install
 k3sup install --ip $ipa --user root --k3s-extra-args '--no-deploy traefik' --cluster --local-path ~/.kube/config
@@ -82,7 +82,7 @@ student1c   Ready    <none>   39s     v1.18.10+k3s1   157.245.222.126   <none>  
 
 congrats you just built a 3 node k3s(k8s) cluster. Not that hard right?
 
-## Ingress
+## Ingress - Done for you!
 
 If you can't tell I like easy and simple. This also applies to Ingress. For that [Traefik](https://traefik.io/) for the win!
 
@@ -117,7 +117,7 @@ EOF
 
 Now you can navigate in the browser to http://traefik.$NUM.stackrox.live and see the traefik dashboard.
 
-## Storage
+## Storage - Done
 
 Here is the easiest way to build stateful storage on this cluster. [Longhorn](https://longhorn.io) from Rancher is awesome...
 
@@ -163,6 +163,23 @@ EOF
 Navigate to the dashboard at http://longhorn.$NUM.stackrox.live
 
 Once everything is running we can move on.
+
+## Code - Done
+
+```bash
+curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/code-server.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -
+```
+
+Now you can navigate in the browser to http://code.$NUM.stackrox.live and login in with `Pa22word`.
+
+You will need to add a few things. The root password is `Pa22word`.
+
+```bash
+export NUM=1
+sudo apt update; sudo apt install -y dnsutils
+export ipa=$(dig +short student"$NUM"a.stackrox.live)
+
+```
 
 ## StackRox
 
