@@ -14,6 +14,8 @@ domain=stackrox.live
 
 image=ubuntu-20-04-x64
 
+version=3.0.54.0
+
 ######  NO MOAR EDITS #######
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -85,7 +87,7 @@ done
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " preload the offline bundle "
-pdsh -l root -w $host_list 'curl -# https://andyc.info/rox/all_the_things_3.0.51.1.tar.gz -o /root/all_the_things_3.0.50.0.tar.gz' > /dev/null 2>&1
+pdsh -l root -w $host_list 'curl -# https://andyc.info/rox/all_the_things_'$version'.tar.gz -o /root/all_the_things_'$version'.tar.gz' > /dev/null 2>&1
 for i in $(seq 1 $num); do
   rsync -avP stackrox.lic root@$prefix"$i"a.$domain:/root/  > /dev/null 2>&1
 done
