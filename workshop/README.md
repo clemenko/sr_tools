@@ -177,7 +177,11 @@ You will need to add a few things. The root password is `Pa22word`.
 We need to setup something.
 
 ```bash
-sudo apt update; sudo -i apt install pdsh vim dnsutils -y
+# password is Pa22word
+sudo -i
+
+# add a few packages
+apt update; apt install pdsh vim dnsutils -y
 
 # set student number
 export NUM=1
@@ -185,7 +189,6 @@ export NUM=1
 export ipa=$(dig +short student"$NUM"a.stackrox.live)
 export ipb=$(dig +short student"$NUM"b.stackrox.live)
 export ipb=$(dig +short student"$NUM"b.stackrox.live)
-
 ```
 
 ## StackRox
