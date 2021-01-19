@@ -189,6 +189,8 @@ export NUM=1
 export ipa=$(dig +short student"$NUM"a.stackrox.live)
 export ipb=$(dig +short student"$NUM"b.stackrox.live)
 export ipb=$(dig +short student"$NUM"b.stackrox.live)
+
+export PATH=$PATH:/opt/bin
 ```
 
 ## StackRox

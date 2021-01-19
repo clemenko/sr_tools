@@ -89,7 +89,7 @@ done
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " deploy k3s, traefik, and code-server "
-pdsh -l root -w $master_list '/root/master_build.sh' 
+pdsh -l root -w $master_list '/root/master_build.sh' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " preload the offline bundle "
