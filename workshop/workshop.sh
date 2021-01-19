@@ -89,12 +89,11 @@ done
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " deploy k3s, traefik, and code-server "
-exit
 pdsh -l root -w $master_list '/root/master_build.sh' 
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " preload the offline bundle "
-pdsh -l root -w $host_list "curl -# https://andyc.info/rox/all_the_things_$version.tar.gz -o /root/all_the_things_$version.tar.gz" > /dev/null 2>&1
+pdsh -l root -w $host_list "curl -# https://andyc.info/rox/stackrox_all_$version.tar.gz -o /root/stackrox_all_$version.tar.gz" > /dev/null 2>&1
 for i in $(seq 1 $num); do
   rsync -avP stackrox.lic root@$prefix"$i"a.$domain:/root/  > /dev/null 2>&1
 done

@@ -174,10 +174,17 @@ Now you can navigate in the browser to http://code.$NUM.stackrox.live and login 
 
 You will need to add a few things. The root password is `Pa22word`.
 
+We need to setup something.
+
 ```bash
+sudo apt update; sudo -i apt install pdsh vim dnsutils -y
+
+# set student number
 export NUM=1
-sudo apt update; sudo apt install -y dnsutils
+# get ip addresses
 export ipa=$(dig +short student"$NUM"a.stackrox.live)
+export ipb=$(dig +short student"$NUM"b.stackrox.live)
+export ipb=$(dig +short student"$NUM"b.stackrox.live)
 
 ```
 
@@ -208,13 +215,13 @@ For this workshop we have preloaded the offline tar for you. Here is a script th
 export PDSH_RCMD_TYPE=ssh
 
 # uncompress the complete bundle on all nodes
-pdsh -l root -w student1a,student1b,student1c 'tar -zvxf all_the_things_3.0.54.0.tar.gz'
+pdsh -l root -w $ipa,$ipb,$ipc 'tar -zvxf stackrox_all_3.0.54.0.tar.gz'
 
 # uncompress the smaller tars on all nodes
-pdsh -l root -w student1a,student1b,student1c 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.54.0.tgz; tar -zxvf image-collector-bundle_3.0.54.0.tgz'
+pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.54.0.tgz; tar -zxvf image-collector-bundle_3.0.54.0.tgz'
 
 # load the images into containerd on all nodes
-pdsh -l root -w student1a,student1b,student1c 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
+pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
 
 # when running the `roxctl` command make sure to add `--offline` and `--enable-telemetry=false`
 roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --offline
