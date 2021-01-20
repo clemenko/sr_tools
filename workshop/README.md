@@ -186,7 +186,7 @@ export NUM=1
 # get ip addresses
 export ipa=$(dig +short student"$NUM"a.stackrox.live)
 export ipb=$(dig +short student"$NUM"b.stackrox.live)
-export ipb=$(dig +short student"$NUM"b.stackrox.live)
+export ipc=$(dig +short student"$NUM"c.stackrox.live)
 
 export PATH=$PATH:/opt/bin
 ```
