@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=1 # of $prefix"
+num=2 # num of students
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -58,7 +58,7 @@ for i in $(seq 1 $num); do
  doctl compute domain records create $domain --record-type A --record-name $prefix"$i"a --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"a|awk '{print $1}') > /dev/null 2>&1
  doctl compute domain records create $domain --record-type A --record-name $prefix"$i"b --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"b|awk '{print $1}') > /dev/null 2>&1
  doctl compute domain records create $domain --record-type A --record-name $prefix"$i"c --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"c|awk '{print $1}') > /dev/null 2>&1
- doctl compute domain records create $domain --record-type A --record-name 1 --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"a|awk '{print $1}') > /dev/null 2>&1
+ doctl compute domain records create $domain --record-type A --record-name $num --record-ttl 150 --record-data $(cat hosts.txt|grep $prefix"$i"a|awk '{print $1}') > /dev/null 2>&1
  doctl compute domain records create $domain --record-type CNAME --record-name "*.$i" --record-ttl 150 --record-data "$i".$domain. > /dev/null 2>&1
 done
 echo "$GREEN" "ok" "$NORMAL"
