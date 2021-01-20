@@ -46,6 +46,8 @@ Every student will get 3 vms to set up as a [k3s](https://k3s.io) cluster. The i
 ssh root@student$NUMa.stackrox.live
 ```
 
+OR use [Code](#Code---Done)
+
 ## K3s - Done
 
 Lets deploys [k3s](https://k3s.io). From the 1A node we will run all the commands. Don't for get to set the student number.
@@ -165,10 +167,6 @@ Navigate to the dashboard at http://longhorn.$NUM.stackrox.live
 Once everything is running we can move on.
 
 ## Code - Done
-
-```bash
-curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/code-server.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -
-```
 
 Now you can navigate in the browser to http://code.$NUM.stackrox.live and login in with `Pa22word`.
 
