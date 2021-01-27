@@ -18,7 +18,7 @@ echo -n " getting image collector bundle for $version : "
 curl -#L -u $username:$password https://install.stackrox.io/$version/image-collector-bundle.tgz -o image-collector-bundle_$version.tgz
 
 echo -n " getting default auth plugin for $version : "
-curl -#L -u $username:$password https://install.stackrox.io/authz-plugin/default-authz-plugin-1.0-src.zip -o default-authz-plugin-1.0-src.zip
+#curl -#L -u $username:$password https://install.stackrox.io/authz-plugin/default-authz-plugin-1.0-src.zip -o default-authz-plugin-1.0-src.zip
 
 # get scanner db
 echo -n " getting vuln database : "

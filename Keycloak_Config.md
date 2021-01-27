@@ -48,7 +48,7 @@ Then **Add an Auth Provider --> OpenID Connect**
 
 `HTTP POST` : Checked
 
-`Issuer` : https+insecure://keycloak.dockr.life/auth/realms/stackrox/
+`Issuer` : https+insecure://keycloak.dockr.life/auth/realms/stackrox
 
 `Client ID` : stackrox
 
@@ -56,9 +56,11 @@ Then **Add an Auth Provider --> OpenID Connect**
 
 Click Save and Test.
 
+------
+
 ## Notes for Saml2
 
-### in Stackrox:
+### in Stackrox
 
 Integration Name: Keycloak
 
