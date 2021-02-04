@@ -64,16 +64,16 @@ Click Save and Test.
 
 Integration Name: Keycloak
 
-ServiceProvider Issuer: https://keycloak.url
+ServiceProvider Issuer: https://keycloak.dockr.life
 
-idP Issuer: https://keycloak.url/auth/realms/[yourrealm]
+idP Issuer: https://keycloak.dockr.life/auth/realms/stackrox
 
-IdP SSO URL: https://keycloak.url/auth/realms/[yourrealm]/protocol/saml/clients/[keycloak client name]
+IdP SSO URL: https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/clients/stackrox
 
 Name/ID Format: urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
 
 IdP Certificate (PEM): 
-(can be retrieved from https://keycloak.url/auth/realms/[yourrealm]/protocol/saml/descriptor, you have to add this part below:)
+(can be retrieved from https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/descriptor, you have to add this part below:)
 
 -----BEGIN CERTIFICATE-----
 
@@ -81,9 +81,9 @@ IdP Certificate (PEM):
 
 ### Keycloak Client:
 
-Client ID: https://[stackrox url]/login
+Client ID: stackrox
 
-Base URL: [stackrox url]
+Base URL: https://stackrox.dockr.life
 
 Name: keycloak
 
@@ -97,10 +97,10 @@ Force POST Binding: ON
 
 Name ID Format: username
 
-Valid Redirect URIs: https://[stackrox url]/*
+Valid Redirect URIs: https://stackrox.dockr.life/*
 
 IDP Initiated SSO URL Name: stackrox
 
 Under Fine Grain SAML Endpoint Configuration
 
-Assertion COnsumer Service Redirect Binding URL: https://[stackrox url]/sso/providers/saml/acs
+Assertion Consumer Service Redirect Binding URL: https://stackrox.dockr.life/sso/providers/saml/acs
