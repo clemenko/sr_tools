@@ -10,11 +10,19 @@ This deployment is designed for use with [Traefik](https://traefik.io/). An `Ing
 
 Login with username : `admin` and password `Pa22word`.
 
-### Configure Stackrox Realm
+### Configure Stackrox Realm in Keycloak
 
 Click **Master --> Add realm** and name it `stackrox`.
 
-#### Add Stackrox Client
+### Create user
+
+Next click the **Users** on the left and **Add User**. This should be obvious. Next click the **Credentials** tab to enter a password. Also make sure `Temporary` is off. And click `Reset Password`
+
+---
+
+## OIDC Configuration
+
+### Add Stackrox OIDC Client - Keycloak
 
 Once created click **Clients** on the left. Then Click **Create**.
 
@@ -32,13 +40,9 @@ now save.
 
 Next click the **Credentials** tab to get the secret.
 
-### Create user
+### Configure StackRox OpenID
 
-Next click the **Users** on the left and **Add User**. This should be obvious. Next click the **Credentials** tab to enter a password. Also make sure `Temporary` is off. And click `Reset Password`
-
-## Configure StackRox OpenID
-
-### Add Auth Provider
+#### Add Auth Provider
 
 Navigate to **PLATFORM CONFIGURATION --> ACCESS CONTROL**
 
@@ -56,51 +60,67 @@ Then **Add an Auth Provider --> OpenID Connect**
 
 Click Save and Test.
 
-------
+#### Add Rules as needed - OIDC
 
-## Notes for Saml2
+---
 
-### in Stackrox
+## SAML2 Configuration
 
-Integration Name: Keycloak
+### Add Stackrox SAML2 Client - Keycloak
 
-ServiceProvider Issuer: https://keycloak.dockr.life
+Once created click **Clients** on the left. Then Click **Create**.
 
-idP Issuer: https://keycloak.dockr.life/auth/realms/stackrox
+`Client ID` : stackrox
 
-IdP SSO URL: https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/clients/stackrox
+`Protocol` : saml
 
-Name/ID Format: urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+`Root URL` : ""
 
-IdP Certificate (PEM): 
-(can be retrieved from https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/descriptor, you have to add this part below:)
+Next we need to validate the following settings.
 
------BEGIN CERTIFICATE-----
+`Client ID`: stackrox
 
------END CERTIFICATE-----
+`Base URL`: https://stackrox.dockr.life
 
-### Keycloak Client:
+`Client Protocol`: saml
 
-Client ID: stackrox
+`Include AuthnStatement`: ON
 
-Base URL: https://stackrox.dockr.life
+`Force POST Binding`: ON
 
-Name: keycloak
+`Name ID Format`: username
 
-Client Protocol: saml
+`Valid Redirect URIs`: https://stackrox.dockr.life/*
 
-Include AuthnStatement: ON
-
-Sign Assertions: ON
-
-Force POST Binding: ON
-
-Name ID Format: username
-
-Valid Redirect URIs: https://stackrox.dockr.life/*
-
-IDP Initiated SSO URL Name: stackrox
+`IDP Initiated SSO URL Name`: stackrox
 
 Under Fine Grain SAML Endpoint Configuration
 
-Assertion Consumer Service Redirect Binding URL: https://stackrox.dockr.life/sso/providers/saml/acs
+`Assertion Consumer Service Redirect Binding URL`: https://stackrox.dockr.life/sso/providers/saml/acs
+
+### in Stackrox
+
+`Integration Name`: Keycloak
+
+`ServiceProvider Issuer`: https://keycloak.dockr.life
+
+`Option 2: Static Configuration`
+
+`idP Issuer`: https://keycloak.dockr.life/auth/realms/stackrox
+
+`IdP SSO URL`: https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/clients/stackrox
+
+`Name/ID Format`: urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+
+`IdP Certificate (PEM)`:
+(can be retrieved from https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/descriptor, you have to add this part below:)
+
+```bash
+# paste in the Realm Cert
+export CERT=
+
+# parse 
+echo "-----BEGIN CERTIFICATE-----"; echo $CERT | sed -e 's/.\{64\}/&\n/g'; echo "-----END CERTIFICATE-----"
+```
+
+#### Add Rules as needed - SAML
