@@ -70,6 +70,7 @@ export KEY_URL=keycloak.dockr.life
 export ROX_URL=stackrox.dockr.life
 export ROX_PASSWORD=Pa22word
 
+# KEYCLOAK
 # get auth token - notice keycloak's password 
 export key_token=$(curl -sk -X POST https://$KEY_URL/auth/realms/master/protocol/openid-connect/token -d 'client_id=admin-cli&username=admin&password=Pa22word&credentialId=&grant_type=password' | jq -r .access_token)
 
@@ -85,6 +86,7 @@ export client_id=$(curl -sk  https://$KEY_URL/auth/admin/realms/stackrox/clients
 # get client_secret
 export client_secret=$(curl -sk  https://$KEY_URL/auth/admin/realms/stackrox/clients/$client_id/client-secret -H "authorization: Bearer $key_token" | jq -r .value)
 
+# STACKROX
 # config stackrox
 export auth_id=$(curl -sk -X POST -u admin:$ROX_PASSWORD https://$ROX_URL/v1/authProviders -d '{"type":"oidc","uiEndpoint":"'$ROX_URL'","enabled":true,"config":{"mode":"post","do_not_use_client_secret":"false","client_secret":"'$client_secret'","issuer":"https+insecure://'$KEY_URL'/auth/realms/stackrox","client_id":"stackrox"},"name":"stackrox"}' | jq -r .id)
 
