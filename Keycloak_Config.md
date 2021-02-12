@@ -50,7 +50,7 @@ Then **Add an Auth Provider --> OpenID Connect**
 
 `Name` : Generic Name, anything will work.
 
-`HTTP POST` : Checked
+`Query` : Checked
 
 `Issuer` : https+insecure://keycloak.dockr.life/auth/realms/stackrox
 
