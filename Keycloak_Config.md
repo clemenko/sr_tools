@@ -81,7 +81,6 @@ curl -sk -X POST https://$KEY_URL/auth/admin/realms -H "authorization: Bearer $k
 curl -sk -X POST https://$KEY_URL/auth/admin/realms/stackrox/clients -H "authorization: Bearer $key_token" -H 'accept: application/json, text/plain, */*' -H 'content-type: application/json;charset=UTF-8' -d '{"enabled":true,"attributes":{},"redirectUris":[],"clientId":"stackrox","protocol":"openid-connect","publicClient": false,"redirectUris":["https://'$ROX_URL'/sso/providers/oidc/callback"]}'
 #,"implicitFlowEnabled":true
 
-
 # get client id
 export client_id=$(curl -sk  https://$KEY_URL/auth/admin/realms/stackrox/clients/ -H "authorization: Bearer $key_token"  | jq -r '.[] | select(.clientId=="stackrox") | .id')
 
