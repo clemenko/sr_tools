@@ -79,6 +79,8 @@ curl -sk -X POST https://$KEY_URL/auth/admin/realms -H "authorization: Bearer $k
 
 # add client
 curl -sk -X POST https://$KEY_URL/auth/admin/realms/stackrox/clients -H "authorization: Bearer $key_token" -H 'accept: application/json, text/plain, */*' -H 'content-type: application/json;charset=UTF-8' -d '{"enabled":true,"attributes":{},"redirectUris":[],"clientId":"stackrox","protocol":"openid-connect","publicClient": false,"redirectUris":["https://'$ROX_URL'/sso/providers/oidc/callback"]}'
+#,"implicitFlowEnabled":true
+
 
 # get client id
 export client_id=$(curl -sk  https://$KEY_URL/auth/admin/realms/stackrox/clients/ -H "authorization: Bearer $key_token"  | jq -r '.[] | select(.clientId=="stackrox") | .id')
@@ -88,10 +90,11 @@ export client_secret=$(curl -sk  https://$KEY_URL/auth/admin/realms/stackrox/cli
 
 # STACKROX
 # config stackrox
-export auth_id=$(curl -sk -X POST -u admin:$ROX_PASSWORD https://$ROX_URL/v1/authProviders -d '{"type":"oidc","uiEndpoint":"'$ROX_URL'","enabled":true,"config":{"mode":"post","do_not_use_client_secret":"false","client_secret":"'$client_secret'","issuer":"https+insecure://'$KEY_URL'/auth/realms/stackrox","client_id":"stackrox"},"name":"stackrox"}' | jq -r .id)
+export auth_id=$(curl -sk -X POST -u admin:$ROX_PASSWORD https://$ROX_URL/v1/authProviders -d '{"type":"oidc","uiEndpoint":"'$ROX_URL'","enabled":true,"config":{"mode":"query","do_not_use_client_secret":"false","client_secret":"'$client_secret'","issuer":"https+insecure://'$KEY_URL'/auth/realms/stackrox","client_id":"stackrox"},"name":"stackrox"}' | jq -r .id)
 
 # change default to Analyst
 curl -sk -X POST -u admin:$ROX_PASSWORD https://$ROX_URL/v1/groups -d '{"props":{"authProviderId":"'$auth_id'"},"roleName":"Analyst"}'
+
 ```
 
 ---
