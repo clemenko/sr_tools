@@ -52,10 +52,9 @@
 Every student has 3 vms to set up as a [k3s](https://k3s.io) cluster. The instructor will assign the student a number. To connect with a root password of `Pa22word`:
 
 ```bash
-# Change $NUM to your student number
-
-ssh root@student$NUMa.stackrox.live
+ssh root@student$NUMa.stackrox.live # Change $NUM to your student number
 ```
+
 Lets deploys [k3s](https://k3s.io). From the $NUMa node we will run all the commands. Don't for get to set the student number.
 
 ```bash
