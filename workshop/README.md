@@ -71,7 +71,6 @@ k3sup join --ip $ipb --server-ip $ipa --user root
 k3sup join --ip $ipc --server-ip $ipa --user root
 
 # Wait about 15 seconds to see the nodes are coming online.
-
 kubectl get node -o wide
 ```
 
@@ -96,12 +95,10 @@ If you can't tell I like easy and simple. This also applies to Ingress. For that
 kubectl apply -f https://raw.githubusercontent.com/clemenko/k8s_yaml/master/traefik_crd_deployment.yml
 
 # verify it is up
-
 kubectl get pod -n traefik
 
 # lets create an ingress entry for this. CHANGE the $NUM to your student number.
 # and yes there are escape characters.
-
 cat <<EOF | kubectl apply -f -
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -131,21 +128,17 @@ Here is the easiest way to build stateful storage on this cluster. [Longhorn](ht
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
 
 # patch to make it default
-
 kubectl patch storageclass longhorn -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 
 # to verify that longhorn is the default storage class
-
 kubectl get sc
 
 # Watch it coming up
-
 watch kubectl get pod -n longhorn-system
 
 # how about a dashboard? CHANGE the $NUM to your student number.
 # and yes there are escape characters.
-
 cat <<EOF | kubectl apply -f -
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -356,7 +349,6 @@ roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central ce
 
 # watch it come up
 watch kubectl get pod -n stackrox
-
 ```
 
 Now check the gui at https://rox.$NUM.stackrox.live/main/clusters 
