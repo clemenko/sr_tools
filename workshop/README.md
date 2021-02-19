@@ -185,6 +185,7 @@ export ipb=$(dig +short student"$NUM"b.stackrox.live)
 export ipc=$(dig +short student"$NUM"c.stackrox.live)
 
 export PATH=$PATH:/opt/bin
+export KUBECONFIG=/opt/kube_config
 ```
 
 ## StackRox
@@ -550,7 +551,7 @@ root@student1a:~# head rox.1.stackrox.live_k3s_NIST_800_190_Results_10-17-20.jso
 
 ### Keycloak
 
-Deploying [Keycloak](https://www.keycloak.org/) and configure [StackRox](https://stackrox.com).
+Deploy [Keycloak](https://www.keycloak.org/) and configure [StackRox](https://stackrox.com).
 
 This deployment is designed for use with [Traefik](https://traefik.io/). An `IngressRouteTCP` is included for TLS passthrough to the self signed cert of keycloak
 
@@ -610,7 +611,24 @@ Click Save and Test.
 
 ### Jenkins
 
+Deploy [Jenkins](jenkins.io) and profit! This version of Jenkins has the [StackRox](https://stackrox.com) plugin added. Simple right?
 
 ```bash
 curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/jenkins_containerd.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -
 ```
+
+Now you can validate it is up on Traefik - http://traefik.$NUM.stackrox.live/. And navigate to http://jenkins.$NUM.stackrox.live/
+
+Login with username : `admin` and password `Pa22word`.
+
+First we need to get `ROX_API_TOKEN` from the terminal with :
+
+```bash
+cat jenkins_API_TOKEN
+```
+
+Second add the `ROX_API_TOKEN` to Jenkins. Click on `Manage Jenkins` --> `Configure System`. Scroll down and paste the token from the terminal into the `ROX_API_TOKEN` in. 
+
+![jenkins1 image](./images/jenkins1.jpg)
+
+
