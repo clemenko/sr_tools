@@ -554,7 +554,7 @@ Deploying [Keycloak](https://www.keycloak.org/) and configure [StackRox](https:/
 
 This deployment is designed for use with [Traefik](https://traefik.io/). An `IngressRouteTCP` is included for TLS passthrough to the self signed cert of keycloak
 
-`kubectl apply -f https://raw.githubusercontent.com/clemenko/k8s_yaml/master/keycloak.yml`
+`curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/keycloak.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -`
 
 Login with username : `admin` and password `Pa22word`.
 
@@ -596,7 +596,7 @@ Then **Add an Auth Provider --> OpenID Connect**
 
 `Query` : Checked
 
-`Issuer` : https+insecure://keycloak.dockr.life/auth/realms/stackrox
+`Issuer` : https+insecure://keycloak.$NUM.stackrox.live/auth/realms/stackrox
 
 `Client ID` : stackrox
 
@@ -608,3 +608,5 @@ Click Save and Test.
 
 ### Jenkins
 
+
+`curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/jenkins_containerd.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -`
