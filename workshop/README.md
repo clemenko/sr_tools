@@ -635,7 +635,7 @@ We will leave the `ROX_URL` the same since we are deploying to the same cluster.
 
 Now click `StackRox_PluginSample` and then `Build Now`.
 
-We should see a failed build. Huzzah!
+We should see a failed build. Huzzah! Take a minute and review the `StackRox Image Security Report` output.
 
 ![jenkins2 image](./images/jenkins2.jpg)
 
