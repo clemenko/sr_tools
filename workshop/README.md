@@ -6,10 +6,10 @@
 
 - [Pre-requisites](#Pre-requisites)
 - [Access to VMS](#access-to-vms)
-- [Simple Kubernetes deployment - K3s](#K3s---Done)
-  - [Ingress - Done](#Ingress---Done)
-  - [Storage - Done](#Storage---Done)
-  - [Code - Done](#Code---Done)
+- [Simple Kubernetes deployment - K3s](#K3s)
+  - [Ingress - Done](#Ingress)
+  - [Storage - Done](#Storage)
+  - [Code - Done](#Code)
 - [StackRox](#stackrox)
   - [Install Offline](#Install-Offline---no-registry)
   - [Install Online](#Install-Online)
@@ -18,6 +18,7 @@
     - [Stages](#Stages)
   - [Integrations & Plugins](#Integrations-&-Plugins)
   - [API & Tokens](#API-&-Tokens)
+    - [Scanner Integration](#scanner-integration)
   - [Documentation](#Documentation)
   - [Troubleshooting](#Troubleshooting)
 - [StackRox Demo](#StackRox-Demo)
@@ -28,6 +29,11 @@
   - Risk
   - CI/CD
 - [Questions, Thoughts](#Questions,-Thoughts)
+- [Advanced Topics](#Advanced-Topics)
+  - [Classification Banners](#classification-banners)
+  - [Compliance Scans](#compliance-scan-results)
+  - [KeyCloak](#Keycloak)
+  - [Jenkins](#Jenkins)
 
 ## Pre-requisites
 
@@ -46,7 +52,7 @@ Every student will get 3 vms to set up as a [k3s](https://k3s.io) cluster. The i
 ssh root@student$NUMa.stackrox.live
 ```
 
-OR use [Code](#Code---Done)
+OR use [Code](#Code)
 
 ## K3s - Done
 
@@ -491,9 +497,20 @@ The second tool is using Central's gui. The gui can help show the current stat o
 
 ![health](./images/health.jpg)
 
-### Bonus Tips
+## StackRox Demo
 
-#### Classification Banners
+- Compliance
+- Network
+- Violations
+- Vulnerability Management
+- Risk
+- CI/CD
+
+## Questions, Thoughts
+
+## Advanced Topics
+
+### Classification Banners
 
 The settings for the classification banners are located in **PLATFORM CONFIGURATION --> SYSTEM CONFIGURATION**. Here you can change all the settings as needed.
 
@@ -513,7 +530,7 @@ sed -i 's/stackrox.dockr.life/rox.$NUM.stackrox.live/g' stackrox_classifications
 ./stackrox_classifications.sh TS
 ```
 
-#### Compliance Scan Results
+### Compliance Scan Results
 
 How about a handy script to use the API to request a compliance scan. Then save the result as json.
 
@@ -542,13 +559,63 @@ root@student1a:~# head rox.1.stackrox.live_k3s_NIST_800_190_Results_10-17-20.jso
 
 ```
 
-## StackRox Demo
+### Keycloak
 
-- Compliance
-- Network
-- Violations
-- Vulnerability Management
-- Risk
-- CI/CD
+Deploying [Keycloak](https://www.keycloak.org/) and configure [StackRox](https://stackrox.com).
 
-## Questions, Thoughts
+This deployment is designed for use with [Traefik](https://traefik.io/). An `IngressRouteTCP` is included for TLS passthrough to the self signed cert of keycloak
+
+`kubectl apply -f https://raw.githubusercontent.com/clemenko/k8s_yaml/master/keycloak.yml`
+
+Login with username : `admin` and password `Pa22word`.
+
+#### Configure Stackrox Realm in Keycloak
+
+Click **Master --> Add realm** and name it `stackrox`.
+
+#### Create user
+
+Next click the **Users** on the left and **Add User**. This should be obvious. Next click the **Credentials** tab to enter a password. Also make sure `Temporary` is off. And click `Reset Password`
+
+#### Add Stackrox OIDC Client - Keycloak
+
+Once created click **Clients** on the left. Then Click **Create**.
+
+`Client ID` : stackrox
+
+`Protocol` : openid-connect
+
+`Root URL` : ""
+
+Next we need to change the `Access Type` to `confidental`. We also need to set the `Valid Redirect URLs` to `https://stackrox.dockr.life/sso/providers/oidc/callback`. Make sure you change your domain name.
+
+now save.
+
+##### Get Client Secret
+
+Next click the **Credentials** tab to get the secret.
+
+#### Configure StackRox OpenID
+
+##### Add Auth Provider
+
+Navigate to **PLATFORM CONFIGURATION --> ACCESS CONTROL**
+
+Then **Add an Auth Provider --> OpenID Connect**
+
+`Name` : Generic Name, anything will work.
+
+`Query` : Checked
+
+`Issuer` : https+insecure://keycloak.dockr.life/auth/realms/stackrox
+
+`Client ID` : stackrox
+
+`Client Secret` : "From the keycloak client credentials page."
+
+Click Save and Test.
+
+##### Add Rules as needed - OIDC
+
+### Jenkins
+

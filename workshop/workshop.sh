@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=5 # num of students
+num=1 # num of students
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -14,7 +14,7 @@ domain=stackrox.live
 
 image=ubuntu-20-04-x64
 
-version=3.0.54.0
+version=3.0.55.0
 
 ######  NO MOAR EDITS #######
 RED=$(tput setaf 1)
