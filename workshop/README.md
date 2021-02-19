@@ -7,9 +7,9 @@
 - [Pre-requisites](#Pre-requisites)
 - [Access to VMS](#access-to-vms)
 - [Simple Kubernetes deployment - K3s](#K3s)
-  - [Ingress - Done](#Ingress)
-  - [Storage - Done](#Storage)
-  - [Code - Done](#Code)
+  - [Ingress](#Ingress)
+  - [Storage](#Storage)
+  - [Code](#Code)
 - [StackRox](#stackrox)
   - [Install Offline](#Install-Offline---no-registry)
   - [Install Online](#Install-Online)
@@ -54,7 +54,7 @@ ssh root@student$NUMa.stackrox.live
 
 OR use [Code](#Code)
 
-## K3s - Done
+## K3s
 
 Lets deploys [k3s](https://k3s.io). From the 1A node we will run all the commands. Don't for get to set the student number.
 
@@ -90,7 +90,7 @@ student1c   Ready    <none>   39s     v1.18.10+k3s1   157.245.222.126   <none>  
 
 congrats you just built a 3 node k3s(k8s) cluster. Not that hard right?
 
-## Ingress - Done
+## Ingress
 
 If you can't tell I like easy and simple. This also applies to Ingress. For that [Traefik](https://traefik.io/) for the win!
 
@@ -125,7 +125,7 @@ EOF
 
 Now you can navigate in the browser to http://traefik.$NUM.stackrox.live and see the traefik dashboard.
 
-## Storage - Done
+## Storage
 
 Here is the easiest way to build stateful storage on this cluster. [Longhorn](https://longhorn.io) from Rancher is awesome...
 
@@ -172,7 +172,7 @@ Navigate to the dashboard at http://longhorn.$NUM.stackrox.live
 
 Once everything is running we can move on.
 
-## Code - Done
+## Code
 
 Now you can navigate in the browser to http://code.$NUM.stackrox.live and login in with `Pa22word`.
 
