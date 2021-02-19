@@ -16,6 +16,8 @@ image=ubuntu-20-04-x64
 
 version=3.0.55.0
 
+deploy_k3s=false
+
 ######  NO MOAR EDITS #######
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -88,9 +90,11 @@ for i in $(seq 1 $num); do
 done
 echo "$GREEN" "ok" "$NORMAL"
 
-echo -n " deploy k3s, traefik, and code-server "
-pdsh -l root -w $master_list '/root/master_build.sh' > /dev/null 2>&1
-echo "$GREEN" "ok" "$NORMAL"
+if [ "$deploy_ks3" = true ]; then
+  echo -n " deploy k3s, traefik, and code-server "
+  pdsh -l root -w $master_list '/root/master_build.sh' > /dev/null 2>&1
+  echo "$GREEN" "ok" "$NORMAL"
+fi
 
 echo -n " preload the offline bundle "
 pdsh -l root -w $host_list "curl -# https://andyc.info/rox/stackrox_all_$version.tar.gz -o /root/stackrox_all_$version.tar.gz" > /dev/null 2>&1

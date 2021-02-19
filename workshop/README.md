@@ -5,8 +5,9 @@
 ## Agenda
 
 - [Pre-requisites](#Pre-requisites)
+- [Choose Your Own Adventure](#access-to-vms)
 - [Access to VMS](#access-to-vms)
-- [Simple Kubernetes deployment - K3s](#K3s)
+- [K3s](#K3s)
   - [Ingress](#Ingress)
   - [Storage](#Storage)
   - [Code](#Code)
@@ -41,6 +42,8 @@
 - Familiarity with a text editor (Visual Studio, emacs, vi, etc.)
 - Bring your own laptop
 - ASK QUESTIONS!
+
+## Choose Your Own Adventure
 
 ## Access to Vms
 
