@@ -640,3 +640,7 @@ We should see a failed build. Huzzah! Take a minute and review the `StackRox Ima
 ![jenkins2 image](./images/jenkins2.jpg)
 
 ### Profit
+
+You know have deployed [StackRox](https://stackrox.com) on [k3s](https://k3s.io) with [Traefik](https://traefik.io/), and [Longhorn](https://longhorn.io).
+
+![success](./images/success.jpg)
