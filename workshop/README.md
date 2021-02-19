@@ -627,8 +627,16 @@ First we need to get `ROX_API_TOKEN` from the terminal with :
 cat jenkins_API_TOKEN
 ```
 
-Second add the `ROX_API_TOKEN` to Jenkins. Click on `Manage Jenkins` --> `Configure System`. Scroll down and paste the token from the terminal into the `ROX_API_TOKEN` in. 
+Second add the `ROX_API_TOKEN` to Jenkins. Click on `Manage Jenkins` --> `Configure System`. Scroll down and paste the token from the terminal into the `ROX_API_TOKEN` in and `SAVE`.
+
+We will leave the `ROX_URL` the same since we are deploying to the same cluster. It would need to be changed if your are deploying to a different cluster.
 
 ![jenkins1 image](./images/jenkins1.jpg)
 
+Now click `StackRox_PluginSample` and then `Build Now`.
 
+We should see a failed build. Huzzah!
+
+![jenkins2 image](./images/jenkins2.jpg)
+
+### Profit
