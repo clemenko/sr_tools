@@ -5,8 +5,7 @@
 ## Agenda
 
 - [Pre-requisites](#Pre-requisites)
-- [Choose Your Own Adventure](#access-to-vms)
-- [Access to VMS](#access-to-vms)
+- [Choose Your Own Adventure](#choose-your-own-adventure)
 - [K3s](#K3s)
   - [Ingress](#Ingress)
   - [Storage](#Storage)
@@ -45,23 +44,19 @@
 
 ## Choose Your Own Adventure
 
-## Access to Vms
+- [Self Install K3s](#K3s) - SSH to the first node and start deploying
+- [Already Installed K3s](#stackrox) - SSH or use [Code](#Code) to get access to the cluster.
 
-Every student will get 3 vms to set up as a [k3s](https://k3s.io) cluster. The instructor will assign the student a number. To connect with a root password of `Pa22word`:
+## K3s
+
+Every student has 3 vms to set up as a [k3s](https://k3s.io) cluster. The instructor will assign the student a number. To connect with a root password of `Pa22word`:
 
 ```bash
 # Change $NUM to your student number
 
 ssh root@student$NUMa.stackrox.live
 ```
-
-OR use [Code](#Code)
-
-## K3s
-
-Lets deploys [k3s](https://k3s.io). From the 1A node we will run all the commands. Don't for get to set the student number.
-
-But, here is how it is done.
+Lets deploys [k3s](https://k3s.io). From the $NUMa node we will run all the commands. Don't for get to set the student number.
 
 ```bash
 # set student number
