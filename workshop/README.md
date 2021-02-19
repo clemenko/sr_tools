@@ -554,7 +554,9 @@ Deploying [Keycloak](https://www.keycloak.org/) and configure [StackRox](https:/
 
 This deployment is designed for use with [Traefik](https://traefik.io/). An `IngressRouteTCP` is included for TLS passthrough to the self signed cert of keycloak
 
-`curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/keycloak.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -`
+```bash
+curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/keycloak.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -
+```
 
 Login with username : `admin` and password `Pa22word`.
 
@@ -576,7 +578,7 @@ Once created click **Clients** on the left. Then Click **Create**.
 
 `Root URL` : ""
 
-Next we need to change the `Access Type` to `confidental`. We also need to set the `Valid Redirect URLs` to `https://stackrox.dockr.life/sso/providers/oidc/callback`. Make sure you change your domain name.
+Next we need to change the `Access Type` to `confidental`. We also need to set the `Valid Redirect URLs` to `https://rox.$NUM.stackrox.live/sso/providers/oidc/callback`. Make sure you change your domain name.
 
 now save.
 
@@ -609,4 +611,6 @@ Click Save and Test.
 ### Jenkins
 
 
-`curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/jenkins_containerd.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -`
+```bash
+curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/jenkins_containerd.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -
+```
