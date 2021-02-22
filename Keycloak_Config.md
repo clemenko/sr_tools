@@ -146,3 +146,5 @@ We need a Keycloak Mapper to present the groups. Navigate to `Client` --> `Stack
 - `Mapper Type` : "Group Membership"
 - `Token Claim Name` : "groups"
 - `Full group path` : Off
+
+Next great the group in `Groups` and add the users.
