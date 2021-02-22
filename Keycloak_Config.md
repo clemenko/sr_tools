@@ -26,11 +26,9 @@ Next click the **Users** on the left and **Add User**. This should be obvious. N
 
 Once created click **Clients** on the left. Then Click **Create**.
 
-`Client ID` : stackrox
-
-`Protocol` : openid-connect
-
-`Root URL` : ""
+- `Client ID` : stackrox
+- `Protocol` : openid-connect
+- `Root URL` : ""
 
 Next we need to change the `Access Type` to `confidental`. We also need to set the `Valid Redirect URLs` to `https://stackrox.dockr.life/sso/providers/oidc/callback`. Make sure you change your domain name.
 
@@ -48,15 +46,11 @@ Navigate to **PLATFORM CONFIGURATION --> ACCESS CONTROL**
 
 Then **Add an Auth Provider --> OpenID Connect**
 
-`Name` : Generic Name, anything will work.
-
-`Query` : Checked
-
-`Issuer` : https+insecure://keycloak.dockr.life/auth/realms/stackrox
-
-`Client ID` : stackrox
-
-`Client Secret` : "From the keycloak client credentials page."
+- `Name` : Generic Name, anything will work.
+- `Query` : Checked
+- `Issuer` : https+insecure://keycloak.dockr.life/auth/realms/stackrox
+- `Client ID` : stackrox
+- `Client Secret` : "From the keycloak client credentials page."
 
 Click Save and Test.
 
@@ -104,29 +98,20 @@ curl -sk -X POST -u admin:$ROX_PASSWORD https://$ROX_URL/v1/groups -d '{"props":
 
 Once created click **Clients** on the left. Then Click **Create**.
 
-`Client ID` : stackrox
-
-`Protocol` : saml
-
-`Root URL` : ""
+- `Client ID` : stackrox
+- `Protocol` : saml
+- `Root URL` : ""
 
 Next we need to validate the following settings.
 
-`Client ID`: stackrox
-
-`Base URL`: https://stackrox.dockr.life
-
-`Client Protocol`: saml
-
-`Include AuthnStatement`: ON
-
-`Force POST Binding`: ON
-
-`Name ID Format`: username
-
-`Valid Redirect URIs`: https://stackrox.dockr.life/*
-
-`IDP Initiated SSO URL Name`: stackrox
+- `Client ID`: stackrox
+- `Base URL`: https://stackrox.dockr.life
+- `Client Protocol`: saml
+- `Include AuthnStatement`: ON
+- `Force POST Binding`: ON
+- `Name ID Format`: username
+- `Valid Redirect URIs`: https://stackrox.dockr.life/*
+- `IDP Initiated SSO URL Name`: stackrox
 
 Under Fine Grain SAML Endpoint Configuration
 
@@ -134,19 +119,13 @@ Under Fine Grain SAML Endpoint Configuration
 
 ### in Stackrox
 
-`Integration Name`: Keycloak
-
-`ServiceProvider Issuer`: https://keycloak.dockr.life
-
-`Option 2: Static Configuration`
-
-`idP Issuer`: https://keycloak.dockr.life/auth/realms/stackrox
-
-`IdP SSO URL`: https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/clients/stackrox
-
-`Name/ID Format`: urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-
-`IdP Certificate (PEM)`:
+- `Integration Name`: Keycloak
+- `ServiceProvider Issuer`: https://keycloak.dockr.life
+- `Option 2: Static Configuration`
+- `idP Issuer`: https://keycloak.dockr.life/auth/realms/stackrox
+- `IdP SSO URL`: https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/clients/stackrox
+- `Name/ID Format`: urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+- `IdP Certificate (PEM)`:
 (can be retrieved from https://keycloak.dockr.life/auth/realms/stackrox/protocol/saml/descriptor, you have to add this part below:)
 
 ```bash
@@ -158,3 +137,12 @@ echo "-----BEGIN CERTIFICATE-----"; echo $CERT | sed -e 's/.\{64\}/&\n/g'; echo 
 ```
 
 #### Add Rules as needed - SAML
+
+## Groups
+
+We need a Keycloak Mapper to present the groups. Navigate to `Client` --> `Stackrox` --> `Mappers` --> `Create`
+
+- `Name` : Anything you want
+- `Mapper Type` : "Group Membership"
+- `Token Claim Name` : "groups"
+- `Full group path` : Off
