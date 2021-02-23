@@ -48,5 +48,5 @@ Now we need add the HTTP Event Collector (HEC).
 
 ```bash
 # test from within the cluster. Get the token from the HEC. 
-curl -k https://splunk.splunk:8088/services/collector/event -H "Authorization: Splunk e1610a4c-dd8a-48ef-a663-74bb7a811c33" -d '{"event": "Hello, world!"}'
+curl -k https://splunk.splunk:8088/services/collector/event -H "Authorization: Splunk e1610a4c-dd8a-48ef-a663-74bb7a811c33" -d '{"event": "Hello, from curl..."}'
 ```
