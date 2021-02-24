@@ -3,4 +3,4 @@ stackrox.lic
 sshkey*
 hosts*
 *.token
-
+.gitignore
