@@ -273,6 +273,7 @@ roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central ce
 
 # and deploy the sensors
 sed -i -e "s/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g" sensor-k3s/sensor.yaml
+sed -i -e "s/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g" sensor-k3s/collector.yaml
 kubectl apply -R -f sensor-k3s/
 
 # watch it come up
