@@ -1,6 +1,6 @@
 # StackRox Workshop - https://andyc.info/roxshop
 
-#### clemenko@stackrox.com | [@clemenko](https://twitter.com/clemenko)
+#### clemenko@redhat.com | [@clemenko](https://twitter.com/clemenko)
 
 ## Agenda
 

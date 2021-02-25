@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=1 # num of students
+num=6 # num of students
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -16,7 +16,7 @@ image=ubuntu-20-04-x64
 
 version=3.0.55.0
 
-deploy_k3s=false
+deploy_k3s=true
 
 ######  NO MOAR EDITS #######
 RED=$(tput setaf 1)
@@ -46,7 +46,7 @@ doctl compute droplet list|grep -v ID|grep $prefix|awk '{print $3" "$2}'> hosts.
 echo "$GREEN" "ok" "$NORMAL"
 
 #check for SSH
-echo -n " checking for ssh "
+echo -n " checking for ssh"
 for ext in $(awk '{print $1}' hosts.txt); do
   until [ $(ssh -o ConnectTimeout=1 $user@$ext 'exit' 2>&1 | grep 'timed out\|refused' | wc -l) = 0 ]; do echo -n "." ; sleep 5; done
 done
@@ -67,7 +67,7 @@ echo "$GREEN" "ok" "$NORMAL"
 
 sleep 15
 
-echo -n " adding os packages "
+echo -n " adding os packages"
 pdsh -l root -w $host_list 'export DEBIAN_FRONTEND=noninteractive; apt-get update; apt-get install jq pdsh resolvconf -y #apt upgrade -y; #apt autoremove -y ' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
@@ -75,11 +75,11 @@ echo -n " updating sshd "
 pdsh -l root -w $host_list 'echo "root:Pa22word" | chpasswd; sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config; systemctl restart sshd' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
-echo -n " install k3sup and roxctl "
+echo -n " install k3sup and roxctl"
 pdsh -l root -w $host_list 'curl -sLS https://get.k3sup.dev | sudo sh ; curl -#L https://andyc.info/rox/roxctl_Linux_'$version' -o /usr/local/bin/roxctl; chmod 755 /usr/local/bin/roxctl; echo "StrictHostKeyChecking no" > ~/.ssh/config; echo search '$domain' >> /etc/resolvconf/resolv.conf.d/tail; resolvconf -u' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
-echo -n " set up ssh key "
+echo -n " set up ssh key"
 ssh-keygen -b 4092 -t rsa -f sshkey -q -N ""
 for i in $(seq 1 $num); do
   rsync -avP sshkey root@$prefix"$i"a.$domain:/root/.ssh/id_rsa  > /dev/null 2>&1
@@ -90,13 +90,13 @@ for i in $(seq 1 $num); do
 done
 echo "$GREEN" "ok" "$NORMAL"
 
-if [ "$deploy_ks3" = true ]; then
-  echo -n " deploy k3s, traefik, and code-server "
+if [ "$deploy_k3s" = true ]; then
+  echo -n " deploy k3s, traefik, and code-server"
   pdsh -l root -w $master_list '/root/master_build.sh' > /dev/null 2>&1
   echo "$GREEN" "ok" "$NORMAL"
 fi
 
-echo -n " preload the offline bundle "
+echo -n " preload the offline bundle and license"
 pdsh -l root -w $host_list "curl -# https://andyc.info/rox/stackrox_all_$version.tar.gz -o /root/stackrox_all_$version.tar.gz" > /dev/null 2>&1
 for i in $(seq 1 $num); do
   rsync -avP stackrox.lic root@$prefix"$i"a.$domain:/root/  > /dev/null 2>&1
