@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=6 # num of students
+num=8 # num of students
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -14,7 +14,7 @@ domain=stackrox.live
 
 image=ubuntu-20-04-x64
 
-version=3.0.55.0
+version=3.0.56.0
 
 deploy_k3s=true
 
