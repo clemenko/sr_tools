@@ -64,7 +64,7 @@ rox_port=$(kubectl -n stackrox get svc central-loadbalancer |grep Node|awk '{pri
 until [ $(curl -kIs https://$server:$rox_port|head -n1|wc -l) = 1 ]; do echo -n "." ; sleep 2; done
 
 #get sensor bundle
-roxctl -e $server:$rox_port sensor generate k8s --name k3s --central central.stackrox:443 --insecure-skip-tls-verify -p $password  --collection-method kernel
+roxctl -e $server:$rox_port sensor generate k8s --name k3s --central central.stackrox:443 --insecure-skip-tls-verify -p $password  --collection-method kernel --slim-collector=false --admission-controller-listen-on-updates --create-admission-controller
 
 #slight mod for pre-loaded images
 sed -i -e "s/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g" sensor-k3s/sensor.yaml

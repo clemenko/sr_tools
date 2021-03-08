@@ -58,7 +58,7 @@ image-collector-bundle/import.sh
 export registry=<CHANGE ME>
 
 # generate stackrox install
-roxctl central generate k8s none --offline --enable-telemetry=false --lb-type np --password $password --main-image $registry/stackrox/main:3.0.52.1 --scanner-db-image $registry/stackrox/scanner-db:2.7.1 --scanner-image $registry/stackrox/scanner:2.7.1
+roxctl central generate k8s none --offline --enable-telemetry=false --lb-type np --password $password --main-image $registry/stackrox/main:3.0.52.1 --scanner-db-image $registry/stackrox/scanner-db:2.7.1 --scanner-image $registry/stackrox/scanner:2.7.1 --slim-collector=false --admission-controller-listen-on-updates --create-admission-controller
 
 # reduce StackRox requirements
 sed -i -e 's/4Gi/2Gi/g' -e 's/8Gi/4Gi/g' ./central-bundle/central/01-central-12-deployment.yaml 
