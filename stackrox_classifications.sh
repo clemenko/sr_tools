@@ -3,7 +3,16 @@
 #here is how to use the API to push a logon banner as well as header and footers for classification. 
 # ac - 8/18/2020
 
-central_server=stackrox.dockr.life:443
+serverUrl=$1
+class=$2
+
+# if stackrox_api.token exists
+if [ -z $serverUrl ]; then 
+ echo "$RED [warn]$NORMAL Please add the server name and classification to the command."
+ echo "  $BLUE Use:$NORMAL $0 <SERVER> <CLASSIFICATION> "
+ echo "  $BLUE Use:$NORMAL $0 stackrox.dockr.life TS "
+ exit
+fi
 
 #########
 
@@ -18,7 +27,7 @@ You are accessing a U.S. Government (USG) Information System (IS) that is provid
 EOF
 )
 
-case $1 in
+case $2 in
 U )
 #unclass
 get_password
