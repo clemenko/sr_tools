@@ -3,11 +3,11 @@
 #here is how to use the API to push a logon banner as well as header and footers for classification. 
 # ac - 8/18/2020
 
-serverUrl=$1
+central_server=$1
 class=$2
 
 # if stackrox_api.token exists
-if [ -z $serverUrl ]; then 
+if [ -z $central_server ]; then 
  echo "$RED [warn]$NORMAL Please add the server name and classification to the command."
  echo "  $BLUE Use:$NORMAL $0 <SERVER> <CLASSIFICATION> "
  echo "  $BLUE Use:$NORMAL $0 stackrox.dockr.life TS "
@@ -18,7 +18,7 @@ fi
 
 function get_password (){
 #read the admin password
-echo -n " - StackRox Admin Password for $serverUrl: "; read -s password; echo
+echo -n " - StackRox Admin Password for $central_server: "; read -s password; echo
 }
 
 #gov logon message
