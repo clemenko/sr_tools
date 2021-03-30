@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # vars
-export version=3.0.56.1
+export version=3.0.57.1
 export username=andy@stackrox.com
 
 rm -rf *.tar.gz
