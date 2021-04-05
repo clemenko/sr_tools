@@ -20,6 +20,7 @@ With registry `/offline_registry_install.sh`
 
 Run `getoffline_stackrox.sh`
 
+----
 
 ## RHEL versions
 
