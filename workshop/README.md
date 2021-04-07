@@ -48,23 +48,28 @@
 - [Self Install K3s](#K3s) - SSH to the first node and start deploying
 - [Already Installed K3s](#stackrox) - SSH or use [Code](#Code) to get access to the cluster.
 
-## K3s
+## SSH
 
-Every student has 3 vms to set up as a [k3s](https://k3s.io) cluster. The instructor will assign the student a number. To connect with a root password of `Pa22word`:
+Every student has 3 vms. The instructor will assign the student a number. To connect with a root password of `Pa22word`:
 
 ```bash
 ssh root@student$NUMa.stackrox.live # Change $NUM to your student number
-```
 
-Lets deploys [k3s](https://k3s.io). From the $NUMa node we will run all the commands. Don't for get to set the student number.
-
-```bash
 # set student number
 export NUM=1
 # get ip addresses
 export ipa=$(dig +short student"$NUM"a.stackrox.live)
 export ipb=$(dig +short student"$NUM"b.stackrox.live)
 export ipc=$(dig +short student"$NUM"c.stackrox.live)
+```
+
+## K3s
+
+Lets deploy [k3s](https://k3s.io). From the $NUMa node we will run all the commands. Don't for get to set the student number.
+
+```bash
+# set student number
+export NUM=1
 
 # k3sup install
 k3sup install --ip $ipa --user root --k3s-extra-args '--no-deploy traefik' --cluster --local-path ~/.kube/config
@@ -190,6 +195,8 @@ export KUBECONFIG=/opt/kube_config
 ```
 
 ## StackRox
+
+Have you connected to a server with [Code](#Code) or 
 
 Let's look at the architecture
 
