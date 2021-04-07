@@ -196,7 +196,7 @@ export KUBECONFIG=/opt/kube_config
 
 ## StackRox
 
-Have you connected to a server with [Code](#Code) or 
+Have you connected to a server with [Code](#Code) or [SSH](#SSH)
 
 Let's look at the architecture
 
