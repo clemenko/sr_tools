@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=3 # num of students
+num=1 # num of students
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -68,7 +68,7 @@ echo "$GREEN" "ok" "$NORMAL"
 sleep 15
 
 echo -n " adding os packages"
-pdsh -l root -w $host_list 'export DEBIAN_FRONTEND=noninteractive; apt-get update; apt-get install jq pdsh resolvconf -y; apt upgrade -y; apt autoremove -y ' > /dev/null 2>&1
+pdsh -l root -w $host_list 'export DEBIAN_FRONTEND=noninteractive; apt-get update; apt-get install jq pdsh resolvconf -y; #apt upgrade -y; #apt autoremove -y ' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " updating sshd "
