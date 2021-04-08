@@ -81,7 +81,7 @@ echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " setting up environment"
 pdsh -l root -w $host_list 'echo $(hostname| sed -e "s/student//" -e "s/a//") > /root/NUM;
-echo "export NUM=$(cat /root/NUM)" >> .profile; echo "export ipa=$(getent hosts student"$NUM"a.stackrox.live|awk '{print $1}')" >> .profile; echo "export ipb=$(getent hosts student"$NUM"b.stackrox.live|awk '{print $1}')" >> .profile; echo "export ipc=$(getent hosts student"$NUM"c.stackrox.live|awk '{print $1}')" >> .profile'
+echo "export NUM=\$(cat /root/NUM)" >> .profile; echo "export ipa=\$(getent hosts student\"\$NUM\"a.stackrox.live|awk '"'"'{print \$1}'"'"')" >> .profile;echo "export ipb=\$(getent hosts student\"\$NUM\"b.stackrox.live|awk '"'"'{print \$1}'"'"')" >> .profile;echo "export ipc=\$(getent hosts student\"\$NUM\"c.stackrox.live|awk '"'"'{print \$1}'"'"')" >> .profile ; echo "export PATH=\$PATH:/opt/bin" >> .profile'
 echo "$GREEN" "ok" "$NORMAL"
 
 echo -n " set up ssh key"

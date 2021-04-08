@@ -1,6 +1,4 @@
 #!/bin/bash
-export DEBIAN_FRONTEND=noninteractive
-apt-get install -y dnsutils 
 
 # k3s
 k3sup install --ip $ipa --user root --k3s-extra-args "--no-deploy traefik" --cluster
