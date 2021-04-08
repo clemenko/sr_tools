@@ -354,7 +354,7 @@ watch kubectl get pod -n stackrox
 
 # one last step, add the sensors. Again change the $NUM to point to your setup.
 # This will create a directory called `sensor-k3s`
-roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password --admission-controller-listen-on-updates --create-admission-controller --slim-collector=false
+roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password --admission-controller-listen-on-updates --admission-controller-listen-on-creates --admission-controller-scan-inline 
 
 # and deploy the sensors
 ./sensor-k3s/sensor.sh
