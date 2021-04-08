@@ -223,10 +223,10 @@ For this workshop we have preloaded the offline tar for you. Here is a script th
 export PDSH_RCMD_TYPE=ssh
 
 # uncompress the complete bundle on all nodes
-pdsh -l root -w $ipa,$ipb,$ipc 'tar -zvxf stackrox_all_3.0.55.0.tar.gz'
+pdsh -l root -w $ipa,$ipb,$ipc 'tar -zvxf stackrox_all_3.0.57.2.tar.gz'
 
 # uncompress the smaller tars on all nodes
-pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.55.0.tgz; tar -zxvf image-collector-bundle_3.0.55.0.tgz'
+pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.57.2.tgz; tar -zxvf image-collector-bundle_3.0.57.2.tgz'
 
 # load the images into containerd on all nodes
 pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
@@ -276,7 +276,7 @@ EOF
 # navigate to https://rox.$NUM.stackrox.live !
 
 # now we can create the sensor
-roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password --admission-controller-listen-on-updates --create-admission-controller --slim-collector=false
+roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password --admission-controller-listen-on-updates --admission-controller-listen-on-creates --admission-controller-scan-inline  --slim-collector=false
 
 # and deploy the sensors
 sed -i -e "s/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g" sensor-k3s/sensor.yaml
