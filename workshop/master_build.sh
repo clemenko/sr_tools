@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source /root/.profile
+
 # k3s
 k3sup install --ip $ipa --user root --k3s-extra-args "--no-deploy traefik" --cluster
 k3sup join --ip $ipb --server-ip $ipa --user root

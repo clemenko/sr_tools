@@ -39,8 +39,7 @@
 ## Pre-requisites
 
 - Basic Linux command line skills
-- Familiarity with a text editor (Visual Studio, emacs, vi, etc.)
-- Bring your own laptop
+- Familiarity with a text editor (VS Code, vi, etc.)
 - ASK QUESTIONS!
 
 ## Choose Your Own Adventure
@@ -209,16 +208,16 @@ For this workshop we have preloaded the offline tar for you. Here is a script th
 export PDSH_RCMD_TYPE=ssh
 
 # uncompress the complete bundle on all nodes
-pdsh -l root -w $ipa,$ipb,$ipc 'tar -zvxf stackrox_all_3.0.57.2.tar.gz'
+pdsh -l root -w $ipa,$ipb,$ipc 'tar -zvxf stackrox_all_3.0.57.2.tar.gz' | dshbak -c
 
 # uncompress the smaller tars on all nodes
-pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.57.2.tgz; tar -zxvf image-collector-bundle_3.0.57.2.tgz'
+pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.57.2.tgz; tar -zxvf image-collector-bundle_3.0.57.2.tgz' | dshbak -c
 
 # load the images into containerd on all nodes
-pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
+pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done' | dshbak -c
 
 # when running the `roxctl` command make sure to add `--offline` and `--enable-telemetry=false`
-roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --offline 
+roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --offline -p Pa22word
 
 # modify the HPA for the scanner
 sed -i -e 's/replicas: 3/replicas: 1/g' ./central-bundle/scanner/02-scanner-06-deployment.yaml
