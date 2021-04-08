@@ -79,6 +79,11 @@ echo -n " install k3sup and roxctl"
 pdsh -l root -w $host_list 'curl -sLS https://get.k3sup.dev | sudo sh ; curl -#L https://andyc.info/rox/roxctl_Linux_'$version' -o /usr/local/bin/roxctl; chmod 755 /usr/local/bin/roxctl; echo "StrictHostKeyChecking no" > ~/.ssh/config; echo search '$domain' >> /etc/resolvconf/resolv.conf.d/tail; resolvconf -u' > /dev/null 2>&1
 echo "$GREEN" "ok" "$NORMAL"
 
+echo -n " setting up environment"
+pdsh -l root -w $host_list 'echo $(hostname| sed -e "s/student//" -e "s/a//") > /root/NUM;
+echo "export NUM=$(cat /root/NUM)" >> .profile; echo "export ipa=$(getent hosts student"$NUM"a.stackrox.live|awk '{print $1}')" >> .profile; echo "export ipb=$(getent hosts student"$NUM"b.stackrox.live|awk '{print $1}')" >> .profile; echo "export ipc=$(getent hosts student"$NUM"c.stackrox.live|awk '{print $1}')" >> .profile'
+echo "$GREEN" "ok" "$NORMAL"
+
 echo -n " set up ssh key"
 ssh-keygen -b 4092 -t rsa -f sshkey -q -N ""
 for i in $(seq 1 $num); do

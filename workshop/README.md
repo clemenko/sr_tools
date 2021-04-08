@@ -55,12 +55,8 @@ Every student has 3 vms. The instructor will assign the student a number. To con
 ```bash
 ssh root@student$NUMa.stackrox.live # Change $NUM to your student number
 
-# set student number
-export NUM=1
-# get ip addresses
-export ipa=$(dig +short student"$NUM"a.stackrox.live)
-export ipb=$(dig +short student"$NUM"b.stackrox.live)
-export ipc=$(dig +short student"$NUM"c.stackrox.live)
+# Validate the student number
+echo $NUM
 ```
 
 ## K3s
@@ -68,9 +64,6 @@ export ipc=$(dig +short student"$NUM"c.stackrox.live)
 Lets deploy [k3s](https://k3s.io). From the $NUMa node we will run all the commands. Don't for get to set the student number.
 
 ```bash
-# set student number
-export NUM=1
-
 # k3sup install
 k3sup install --ip $ipa --user root --k3s-extra-args '--no-deploy traefik' --cluster --local-path ~/.kube/config
 k3sup join --ip $ipb --server-ip $ipa --user root
@@ -181,17 +174,10 @@ We need to setup something.
 sudo -i
 
 # add a few packages
-apt update; apt install pdsh vim dnsutils -y
+apt update; apt install pdsh vim -y
 
-# set student number
-export NUM=1
-# get ip addresses
-export ipa=$(dig +short student"$NUM"a.stackrox.live)
-export ipb=$(dig +short student"$NUM"b.stackrox.live)
-export ipc=$(dig +short student"$NUM"c.stackrox.live)
-
-export PATH=$PATH:/opt/bin
-export KUBECONFIG=/opt/kube_config
+# Validate student number
+echo $NUM
 ```
 
 ## StackRox
