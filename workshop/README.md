@@ -232,7 +232,7 @@ pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_
 pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done'
 
 # when running the `roxctl` command make sure to add `--offline` and `--enable-telemetry=false`
-roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --offline --admission-controller-listen-on-updates --create-admission-controller --slim-collector=false
+roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --offline 
 
 # modify the HPA for the scanner
 sed -i -e 's/replicas: 3/replicas: 1/g' ./central-bundle/scanner/02-scanner-06-deployment.yaml
@@ -276,7 +276,7 @@ EOF
 # navigate to https://rox.$NUM.stackrox.live !
 
 # now we can create the sensor
-roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password
+roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password --admission-controller-listen-on-updates --create-admission-controller --slim-collector=false
 
 # and deploy the sensors
 sed -i -e "s/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g" sensor-k3s/sensor.yaml
@@ -303,7 +303,7 @@ read -s -p "REGISTRY_PASSWORD :" REGISTRY_PASSWORD; echo ""
 # Now lets create the yamls from `roxctl`.
 # This will output to a directory `central-bundle`
 # -- don't forget to add `--offline` to this command if you are offline --
-roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none --admission-controller-listen-on-updates --create-admission-controller
+roxctl central generate k8s pvc --storage-class longhorn --size 30 --license stackrox.lic --enable-telemetry=false --lb-type none -p Pa22word
 
 # make note that the admin password for the platform is here
 cat central-bundle/password
@@ -354,7 +354,7 @@ watch kubectl get pod -n stackrox
 
 # one last step, add the sensors. Again change the $NUM to point to your setup.
 # This will create a directory called `sensor-k3s`
-roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password
+roxctl sensor generate k8s -e rox.$NUM.stackrox.live:443 --name k3s --central central.stackrox:443 --insecure-skip-tls-verify --collection-method kernel-module -p $password --admission-controller-listen-on-updates --create-admission-controller --slim-collector=false
 
 # and deploy the sensors
 ./sensor-k3s/sensor.sh
