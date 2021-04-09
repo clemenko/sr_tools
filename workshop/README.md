@@ -281,9 +281,10 @@ roxctl scanner upload-db -e rox.$NUM.stackrox.live:443 --scanner-db-file=stackro
 # First thing is to set the logins. Yes you should change this to your login at help.stackrox.com. We need this to pull the bits from the authenticated registry. This will be useful even on an air gapped install.
 
 export REGISTRY_USERNAME=andy@stackrox.com
-export REGISTRY_PASSWORD=blahblah2020
 
-read -s -p "REGISTRY_PASSWORD :" REGISTRY_PASSWORD; echo ""
+read -s -p "REGISTRY_PASSWORD: " PASSWORD; echo ""
+# read password or add your own
+export REGISTRY_PASSWORD=$PASSWORD
 
 # Now lets create the yamls from `roxctl`.
 # This will output to a directory `central-bundle`
