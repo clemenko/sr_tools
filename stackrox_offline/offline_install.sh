@@ -4,7 +4,7 @@
 # assumptions are made that some things are available.
 # this script also assumes all the images are loaded to the servers
 
-export version=3.0.52.1
+export version=3.0.58.0
 export password=Pa22word
 export server=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1|head -1)
 

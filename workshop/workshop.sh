@@ -14,7 +14,7 @@ domain=stackrox.live
 
 image=ubuntu-20-04-x64
 
-version=3.0.57.2
+version=3.0.58.0
 
 deploy_k3s=true
 
@@ -101,11 +101,8 @@ if [ "$deploy_k3s" = true ]; then
   echo "$GREEN" "ok" "$NORMAL"
 fi
 
-echo -n " preload the offline bundle and license"
+echo -n " preload the offline bundle"
 pdsh -l root -w $host_list "curl -# https://andyc.info/rox/stackrox_all_$version.tar.gz -o /root/stackrox_all_$version.tar.gz" > /dev/null 2>&1
-for i in $(seq 1 $num); do
-  rsync -avP stackrox.lic root@$prefix"$i"a.$domain:/root/  > /dev/null 2>&1
-done
 echo "$GREEN" "ok" "$NORMAL"
 
 echo ""
