@@ -282,9 +282,9 @@ roxctl scanner upload-db -e rox.$NUM.stackrox.live:443 --scanner-db-file=stackro
 
 export REGISTRY_USERNAME=andy@stackrox.com
 
-read -s -p "REGISTRY_PASSWORD: " PASSWORD; echo ""
+read -s -p "REGISTRY_PASSWORD: " REGISTRY_PASSWORD; echo ""
 # read password or add your own
-export REGISTRY_PASSWORD=$PASSWORD
+export REGISTRY_PASSWORD
 
 # Now lets create the yamls from `roxctl`.
 # This will output to a directory `central-bundle`
