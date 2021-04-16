@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=1 # num of students
+num=4 # num of students
 prefix=student
 password=Pa22word
 zone=nyc3
