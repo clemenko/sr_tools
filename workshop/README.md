@@ -510,11 +510,8 @@ OR you can use a handy script in this repo.
 wget https://raw.githubusercontent.com/clemenko/sr_tools/main/stackrox_classifications.sh
 chmod 755 stackrox_classifications.sh
 
-# we need to change the server in the script
-sed -i 's/stackrox.dockr.life/rox.$NUM.stackrox.live/g' stackrox_classifications.sh
-
 # now we can run it for the 
-./stackrox_classifications.sh TS
+./stackrox_classifications.sh rox.$NUM.stackrox.live TS
 ```
 
 ### Compliance Scan Results
