@@ -14,7 +14,7 @@ domain=stackrox.live
 
 image=ubuntu-20-04-x64
 
-version=3.0.58.0
+version=3.0.58.1
 
 deploy_k3s=true
 
