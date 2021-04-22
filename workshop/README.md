@@ -162,6 +162,16 @@ Once everything is running we can move on.
 
 ## Code
 
+Deploy if not deployed for you. 
+
+```bash
+# curl all the things
+curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/workshop-code-server.yml | sed 's/dockr.life/'$NUM'.stackrox.live/g' | kubectl  apply -f -
+
+# ingress
+curl -s https://raw.githubusercontent.com/clemenko/k8s_yaml/master/workshop_yamls.yaml | sed "s/\$NUM/$NUM/" | kubectl apply -f -
+```
+
 Now you can navigate in the browser to http://code.$NUM.stackrox.live and login in with `Pa22word`.
 
 You will need to add a few things. The root password is `Pa22word`.

@@ -3,7 +3,7 @@
 # edit vars
 ###################################
 set -e
-num=7 # num of students
+num=6 # num of students
 prefix=student
 password=Pa22word
 zone=nyc3
@@ -16,7 +16,7 @@ image=ubuntu-20-04-x64
 
 version=3.0.58.1
 
-deploy_k3s=true
+deploy_k3s=false
 
 ######  NO MOAR EDITS #######
 RED=$(tput setaf 1)
