@@ -162,7 +162,7 @@ Once everything is running we can move on.
 
 ## Code
 
-Deploy if not deployed for you. 
+Deploy if not deployed for you.
 
 ```bash
 # curl all the things
