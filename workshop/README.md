@@ -218,10 +218,10 @@ For this workshop we have preloaded the offline tar for you. Here is a script th
 export PDSH_RCMD_TYPE=ssh
 
 # uncompress the complete bundle on all nodes
-pdsh -l root -w $ipa,$ipb,$ipc 'tar -zvxf stackrox_all_3.0.58.1.tar.gz' | dshbak -c
+pdsh -l root -w $ipa,$ipb,$ipc 'tar -zvxf stackrox_all_3.0.59.0.tar.gz' | dshbak -c
 
 # uncompress the smaller tars on all nodes
-pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.58.1.tgz; tar -zxvf image-collector-bundle_3.0.58.1.tgz' | dshbak -c
+pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; tar -zxvf stackrox_offline_3.0.59.0.tgz; tar -zxvf image-collector-bundle_3.0.59.0.tgz' | dshbak -c
 
 # load the images into containerd on all nodes
 pdsh -l root -w $ipa,$ipb,$ipc 'cd stackrox_offline; for i in $(ls image-bundle/*.img); do ctr -n=k8s.io images import $i; done ; for i in $(ls image-collector-bundle/*.img); do ctr -n=k8s.io images import $i; done' | dshbak -c
