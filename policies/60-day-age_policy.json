@@ -1,0 +1,75 @@
+{
+    "policies": [
+        {
+            "name": "60-Day Image Age",
+            "description": "Alert on deployments with images that haven't been updated in 60 days",
+            "rationale": "Base images are updated frequently with bug fixes and vulnerability patches. Image age exceeding 60 days may indicate a higher risk of vulnerabilities existing in the image.",
+            "remediation": "Rebuild your image, push a new minor version (with a new immutable tag), and update your service to use it.",
+            "disabled": false,
+            "categories": [
+                "DevOps Best Practices",
+                "Security Best Practices"
+            ],
+            "fields": null,
+            "lifecycleStages": [
+                "BUILD",
+                "DEPLOY"
+            ],
+            "whitelists": [],
+            "exclusions": [
+                {
+                    "name": "Don't alert on kube-system namespace",
+                    "deployment": {
+                        "name": "",
+                        "scope": {
+                            "cluster": "",
+                            "namespace": "kube-system",
+                            "label": null
+                        }
+                    },
+                    "image": null,
+                    "expiration": null
+                },
+                {
+                    "name": "Don't alert on istio-system namespace",
+                    "deployment": {
+                        "name": "",
+                        "scope": {
+                            "cluster": "",
+                            "namespace": "istio-system",
+                            "label": null
+                        }
+                    },
+                    "image": null,
+                    "expiration": null
+                }
+            ],
+            "scope": [],
+            "severity": "LOW_SEVERITY",
+            "enforcementActions": [],
+            "notifiers": [],
+            "lastUpdated": null,
+            "SORTName": "",
+            "SORTLifecycleStage": "",
+            "SORTEnforcement": false,
+            "policyVersion": "1.1",
+            "policySections": [
+                {
+                    "sectionName": "",
+                    "policyGroups": [
+                        {
+                            "fieldName": "Image Age",
+                            "booleanOperator": "OR",
+                            "negate": false,
+                            "values": [
+                                {
+                                    "value": "60"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

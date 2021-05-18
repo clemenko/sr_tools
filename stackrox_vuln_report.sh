@@ -1,7 +1,5 @@
 #!/bin/bash
-
-# script for pulling all vulns from the api
-# ac - 11/10/2020
+# clemenko@gmail.com
 
 set -e
 

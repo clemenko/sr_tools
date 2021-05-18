@@ -1,5 +1,5 @@
 #!/bin/bash
-# clemenko@stackrox.com
+# clemenko@gmail.com
 
 # script for pulling violations by namespace. 
 

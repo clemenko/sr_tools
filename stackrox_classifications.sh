@@ -1,7 +1,7 @@
 #!/bin/bash
-
+# clemenko@gmail.com
 #here is how to use the API to push a logon banner as well as header and footers for classification. 
-# ac - 8/18/2020
+
 
 central_server=$1
 class=$2

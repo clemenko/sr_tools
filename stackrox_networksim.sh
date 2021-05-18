@@ -1,5 +1,5 @@
 #!/bin/bash
-# clemenko@stackrox.com
+# clemenko@gmail.com
 # network simulator yaml
 
 ###### no more edits
