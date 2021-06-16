@@ -66,7 +66,7 @@ export ROX_PASSWORD=Pa22word
 
 # KEYCLOAK
 # get auth token - notice keycloak's password 
-export key_token=$(curl -sk -X POST https://$KEY_URL/auth/realms/master/protocol/openid-connect/token -d 'client_id=admin-cli&username=admin&password=Pa22word&credentialId=&grant_type=password' | jq -r .access_token)
+export key_token=$(curl -sk -X POST https://$KEY_URL/auth/realms/master/protocol/openid-connect/token -d 'client_id=admin-cli&username=admin&password='$ROX_PASSWORD'&credentialId=&grant_type=password' | jq -r .access_token)
 
 # add realm
 curl -sk -X POST https://$KEY_URL/auth/admin/realms -H "authorization: Bearer $key_token" -H 'accept: application/json, text/plain, */*' -H 'content-type: application/json;charset=UTF-8' -d '{"enabled":true,"id":"stackrox","realm":"stackrox"}'
