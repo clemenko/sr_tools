@@ -19,11 +19,11 @@ curl -#L -u $username:$password https://install.stackrox.io/$version/image-colle
 
 # get scanner db
 echo -n " getting vuln database : "
-curl -#LO -u $username:$password https://install.stackrox.io/scanner/scanner-vuln-updates.zip
+curl -#LO https://install.stackrox.io/scanner/scanner-vuln-updates.zip
 
 # get kernel modules
 echo -n "getting kernel support packages"
-curl -#LO -u $username:$password $(curl -sL -u $username:$password https://install.stackrox.io/collector/support-packages/index.html |grep .zip | head -1 | awk -F'"' '{print $4}')
+curl -#LO $(curl -sL https://install.stackrox.io/collector/support-packages/index.html |grep .zip | head -1 | awk -F'"' '{print $4}')
 
 #compressing
 cd ..; tar --exclude=.DS_Store --exclude=stackrox_all_* -zcvf stackrox_offline/stackrox_all_$version.tar.gz stackrox_offline; cd stackrox_offline
