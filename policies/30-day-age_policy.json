@@ -1,9 +1,9 @@
 {
     "policies": [
         {
-            "name": "60-Day Image Age",
-            "description": "Alert on deployments with images that haven't been updated in 60 days",
-            "rationale": "Base images are updated frequently with bug fixes and vulnerability patches. Image age exceeding 60 days may indicate a higher risk of vulnerabilities existing in the image.",
+            "name": "30-Day Image Age",
+            "description": "Alert on deployments with images that haven't been updated in 30 days",
+            "rationale": "Base images are updated frequently with bug fixes and vulnerability patches. Image age exceeding 30 days may indicate a higher risk of vulnerabilities existing in the image.",
             "remediation": "Rebuild your image, push a new minor version (with a new immutable tag), and update your service to use it.",
             "disabled": false,
             "categories": [
@@ -63,7 +63,7 @@
                             "negate": false,
                             "values": [
                                 {
-                                    "value": "60"
+                                    "value": "30"
                                 }
                             ]
                         }
