@@ -27,7 +27,7 @@ echo -n " - StackRox Admin Password for $serverUrl: "; read -s password; echo
 echo "  Importing Policies from $pol_folder folder "
   for pol in $(ls $pol_folder/*.json); do 
     echo -n "    $pol_folder/$pol "
-    responses=$(curl -sk -X POST -u admin:$password  https://stackrox.dockr.life/v1/policies/import -d @$pol_folder/$pol)
+    responses=$(curl -sk -X POST -u admin:$password  https://$serverUrl/v1/policies/import -d @$pol)
     if [ "$(echo $responses|grep error\"|wc -l|sed 's/ //g')" == "1" ]; then echo " - $RED Error :$NORMAL $responses $RED [fail]$NORMAL"
     else 
       case "$(echo $responses | jq .responses[].succeeded)" in
